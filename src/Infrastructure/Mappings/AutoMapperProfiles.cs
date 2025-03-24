@@ -1,8 +1,8 @@
 using AutoMapper;
-using WoundCareApi.API.DTOs;
-using WoundCareApi.src.Core.Domain.CRS;
+using WoundCareApi.Application.DTOs;
+using WoundCareApi.Core.Domain.Entities;
 
-namespace WoundCareApi.AutoMapper;
+namespace WoundCareApi.Infrastructure.Mappings;
 
 public class AutoMapperProfiles : Profile
 {
