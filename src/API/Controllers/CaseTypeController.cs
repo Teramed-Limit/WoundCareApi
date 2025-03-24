@@ -8,12 +8,12 @@ namespace WoundCareApi.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WoundTypeController : BaseApiController<CRS_CfgCaseType, CRSDbContext>
+public class CaseTypeController : BaseApiController<CRS_CfgCaseType, CRSDbContext>
 {
-    private readonly ILogger<WoundTypeController> _logger;
+    private readonly ILogger<CaseTypeController> _logger;
 
-    public WoundTypeController(
-        ILogger<WoundTypeController> logger,
+    public CaseTypeController(
+        ILogger<CaseTypeController> logger,
         IRepository<CRS_CfgCaseType, CRSDbContext> repository,
         IUnitOfWork unitOfWork
     )

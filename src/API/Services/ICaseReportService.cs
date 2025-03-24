@@ -5,7 +5,7 @@ namespace WoundCareApi.API.Services;
 
 public interface ICaseReportService
 {
-    Task<CRS_CaseRecord> GetReportByIdAsync(Guid reportId);
-    Task<CRS_CaseRecord> InsertReportAsync(CaseReportDTO reportDto);
+    Task<CaseRecordDto> GetReportByIdAsync(Guid reportId);
+    Task<CaseRecordDto> InsertReportAsync(CaseReportDTO reportDto);
     Task UpdateReportAsync(Guid reportId, CaseReportDTO reportDto);
 }

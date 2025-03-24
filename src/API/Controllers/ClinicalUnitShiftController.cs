@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.Services;
 using WoundCareApi.Common.Types;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.Persistence.UnitOfWork;
 using WoundCareApi.src.Core.Domain.CRS;

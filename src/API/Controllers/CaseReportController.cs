@@ -1,11 +1,8 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.DTOs;
 using WoundCareApi.API.Services;
-using WoundCareApi.Persistence.Repository;
-using WoundCareApi.Persistence.UnitOfWork;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.src.Core.Domain.CRS;
-using WoundCareApi.src.Infrastructure.Persistence;
 
 namespace WoundCareApi.API.Controllers;
 
@@ -26,7 +23,7 @@ public class CaseReportController : ControllerBase
     }
 
     [HttpGet("reportId/{reportId}")]
-    public async Task<ActionResult<CRS_CaseRecord>> GetReport(string reportId)
+    public async Task<ActionResult<CaseRecordDto>> GetReport(string reportId)
     {
         try
         {
@@ -52,12 +49,12 @@ public class CaseReportController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> InsertReport([FromBody] CaseReportDTO reportDto)
+    public async Task<ActionResult<CaseRecordDto>> InsertReport([FromBody] CaseReportDTO reportDto)
     {
         try
         {
-            var newReport = await _caseReportService.InsertReportAsync(reportDto);
-            return CreatedAtAction(nameof(GetReport), new { reportId = newReport.Puid }, newReport);
+            var newReportId = await _caseReportService.InsertReportAsync(reportDto);
+            return CreatedAtAction(nameof(GetReport), new { reportId = newReportId }, newReportId);
         }
         catch (ArgumentException ex)
         {

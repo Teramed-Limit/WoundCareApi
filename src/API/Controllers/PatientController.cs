@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.Persistence.UnitOfWork;
 using WoundCareApi.src.Core.Domain.CRS;

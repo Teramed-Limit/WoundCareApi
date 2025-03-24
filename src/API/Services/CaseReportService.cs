@@ -1,9 +1,11 @@
 using System.Globalization;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using WoundCareApi.API.DTOs;
 using WoundCareApi.Common.Types;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.Persistence.UnitOfWork;
-using WoundCareApi.src.Core.Domain.CRS;
 using WoundCareApi.src.Infrastructure.Persistence;
 
 namespace WoundCareApi.API.Services;
@@ -13,14 +15,17 @@ public class CaseReportService : ICaseReportService
     private readonly ILogger<CaseReportService> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ShiftTimeService _shiftTimeService;
-    private readonly IRepository<CRS_CaseRecord, CRSDbContext> _repository;
     private readonly UnitShiftService _unitShiftService;
+    private readonly CRSDbContext _context;
+
+    private readonly IRepository<CRS_CaseRecord, CRSDbContext> _repository;
 
     public CaseReportService(
         ILogger<CaseReportService> logger,
         IUnitOfWork unitOfWork,
         ShiftTimeService shiftTimeService,
         UnitShiftService unitShiftService,
+        CRSDbContext context,
         IRepository<CRS_CaseRecord, CRSDbContext> repository
     )
     {
@@ -28,20 +33,63 @@ public class CaseReportService : ICaseReportService
         _unitOfWork = unitOfWork;
         _shiftTimeService = shiftTimeService;
         _unitShiftService = unitShiftService;
+        _context = context;
         _repository = repository;
     }
 
-    public async Task<CRS_CaseRecord> GetReportByIdAsync(Guid reportId)
+    public async Task<CaseRecordDto> GetReportByIdAsync(Guid reportId)
     {
-        var report = await _repository.GetByConditionAsync(x => x.Puid == reportId);
+        var query =
+            from caseRecord in _context.CRS_CaseRecords
+            join caseRecordFormDefine in _context.ReportDefines
+                on caseRecord.FormDefinePuid equals caseRecordFormDefine.Puid
+            join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+                on caseRecord.ClinicalUnitShiftPuid equals clinicalUnitShift.Puid
+                into clinicalShiftGroup
+            from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()
+            where caseRecord.Puid == reportId
+            select new CaseRecordDto()
+            {
+                Puid = caseRecord.Puid,
+                ObservationDateTime = caseRecord.ObservationDateTime,
+                ObservationShiftDate = caseRecord.ObservationShiftDate,
+                ShiftLongLabel = clinicalUnitShift.ShiftLongLabel,
+                ShiftShortLabel = clinicalUnitShift.ShiftShortLabel,
+                FormDefinePuid = caseRecord.FormDefinePuid,
+                FormDefine = null,
+                FormData = null,
+                RawFormDefine = caseRecordFormDefine.FormDefine,
+                RawFormData = caseRecord.FormData
+            };
 
-        if (report == null)
+        var results = await query.OrderBy(x => x.ObservationDateTime).ToListAsync();
+
+        if (results.Count == 0)
+        {
             throw new InvalidOperationException("無法找到報告");
+        }
 
-        return report.FirstOrDefault();
+        foreach (var record in results)
+        {
+            if (!string.IsNullOrEmpty(record.RawFormDefine))
+            {
+                record.FormDefine = JsonSerializer.Deserialize<Dictionary<string, object>>(
+                    record.RawFormDefine
+                );
+            }
+
+            if (!string.IsNullOrEmpty(record.RawFormData))
+            {
+                record.FormData = JsonSerializer.Deserialize<Dictionary<string, object>>(
+                    record.RawFormData
+                );
+            }
+        }
+
+        return results.First();
     }
 
-    public async Task<CRS_CaseRecord> InsertReportAsync(CaseReportDTO reportDto)
+    public async Task<CaseRecordDto> InsertReportAsync(CaseReportDTO reportDto)
     {
         // 解析日期時間並獲取觀察時間
         var (observationDateTime, observationShiftDate, clinicalUnitShiftPuid) =
@@ -58,7 +106,7 @@ public class CaseReportService : ICaseReportService
         // 保存報告
         await SaveReportAsync(newReport);
 
-        return newReport;
+        return await GetReportByIdAsync(newReport.Puid);
     }
 
     public async Task UpdateReportAsync(Guid reportId, CaseReportDTO reportDto)

@@ -1,7 +1,6 @@
-using Serilog;
-using Serilog.Core;
 using WoundCareApi.Common.Types;
 using WoundCareApi.Common.Utils;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.src.Core.Domain.CRS;
 
 namespace WoundCareApi.API.Services
@@ -148,37 +147,6 @@ namespace WoundCareApi.API.Services
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// 獲取當前班別和時間資訊，包括班別所屬日期
-        /// </summary>
-        /// <param name="dateTime">要判斷的時間，預設為當前時間</param>
-        /// <param name="clinicalUnits">臨床單位資料</param>
-        /// <param name="shifts">班別資料</param>
-        /// <param name="clinicalUnitPuid">臨床單位PUID，如果提供，將只計算該臨床單位的班別</param>
-        /// <returns>返回班別和時間資訊</returns>
-        public object GetCurrentShiftInfo(
-            DateTime dateTime,
-            List<CRS_SysClinicalUnit> clinicalUnits,
-            List<CRS_SysClinicalUnitShift> shifts,
-            Guid? clinicalUnitPuid = null
-        )
-        {
-            var result = DetermineShiftAndTime(dateTime, clinicalUnits, shifts, clinicalUnitPuid);
-
-            if (result != null)
-            {
-                return new
-                {
-                    InputTime = DateUtils.FormatDateTime(dateTime),
-                    ClinicalUnitShiftPuid = result.ClinicalUnitShiftPuid
-                };
-            }
-            else
-            {
-                return new { Error = "無法確定班別和時間資訊" };
-            }
         }
     }
 }

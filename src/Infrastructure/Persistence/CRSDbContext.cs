@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.src.Core.Domain.CRS;
 
 namespace WoundCareApi.src.Infrastructure.Persistence;

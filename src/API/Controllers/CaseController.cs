@@ -29,29 +29,31 @@ public class CaseController : ControllerBase
     }
 
     [HttpGet("caseId/{caseId}/caseHistory")]
-    public async Task<ActionResult<IEnumerable<CRS_Case>>> GetCaseHistory(string caseId)
+    public async Task<ActionResult<CaseHistoryDto>> GetCaseHistory(string caseId)
     {
         var res = await _caseService.GetCaseHistory(caseId);
         return Ok(res);
     }
 
-    [HttpGet("caseId/{caseId}/date/{date}/caseRecord")]
-    public async Task<ActionResult<IEnumerable<CRS_CaseRecord>>> GetCaseRecord(
+    [HttpGet("caseId/{caseId}/date/{date}/caseRecords")]
+    public async Task<ActionResult<IEnumerable<CaseRecordDto>>> GetCaseRecord(
         string caseId,
-        string date
+        string date,
+        [FromQuery] bool isUsingShiftDate = false
     )
     {
-        var res = await _caseService.GetCaseRecord(caseId, date);
+        var res = await _caseService.GetCaseRecord(caseId, date, isUsingShiftDate);
         return Ok(res);
     }
 
     [HttpGet("caseId/{caseId}/date/{date}/images")]
     public async Task<ActionResult<IEnumerable<CaseImageDto>>> GetCaseImage(
         string caseId,
-        string date
+        string date,
+        [FromQuery] bool isUsingShiftDate = false
     )
     {
-        var res = await _caseService.GetCaseImage(caseId, date);
+        var res = await _caseService.GetCaseImage(caseId, date, isUsingShiftDate);
         return Ok(res);
     }
 }

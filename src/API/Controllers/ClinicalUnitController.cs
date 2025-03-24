@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.Persistence.UnitOfWork;
 using WoundCareApi.src.Core.Domain.CRS;

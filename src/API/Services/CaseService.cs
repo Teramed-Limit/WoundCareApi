@@ -56,32 +56,87 @@ public class CaseService
             .ToDictionary(g => g.Key, g => g.ToList());
     }
 
-    public async Task<Dictionary<string, List<CaseHistoryDto>>> GetCaseHistory(string caseId)
+    public async Task<CaseHistoryDto> GetCaseHistory(string caseId)
     {
-        var query =
-            from caseItem in _context.CRS_Cases
-            join caseSeriesMap in _context.CRS_CareSeriesMaps
-                on caseItem.Puid equals caseSeriesMap.PtCasePuid
-            join series in _context.DicomSeries
-                on caseSeriesMap.DicomSeriesUid equals series.SeriesInstanceUID
-            where caseItem.Puid == Guid.Parse(caseId)
-            select new CaseHistoryDto()
-            {
-                CaseId = caseItem.Puid,
-                SeriesInstanceUid = series.SeriesInstanceUID.Trim(),
-                SeriesDate = series.SeriesDate.Trim(),
-                SeriesTime = series.SeriesTime.Trim()
-            };
+        var parsedCaseId = Guid.Parse(caseId);
 
-        return await query
-            .GroupBy(c => c.SeriesDate.Trim())
-            .ToDictionaryAsync(
-                g => g.Key.Trim(),
-                g => g.OrderBy(x => x.SeriesDate.Trim()).ThenBy(x => x.SeriesTime).ToList()
-            );
+        // 分別查詢記錄日期和系列日期
+        var recordDates = await _context.CRS_CaseRecords
+            .Where(r => r.PtCasePuid == parsedCaseId)
+            .Select(
+                r =>
+                    new
+                    {
+                        ObservationDate = r.ObservationDateTime.HasValue
+                            ? r.ObservationDateTime.Value.ToString("yyyyMMdd")
+                            : null,
+                        ShiftDate = r.ObservationShiftDate.HasValue
+                            ? r.ObservationShiftDate.Value.ToString("yyyyMMdd")
+                            : null
+                    }
+            )
+            .ToListAsync();
+
+        var seriesDates = await _context.CRS_CareSeriesMaps
+            .Where(s => s.PtCasePuid == parsedCaseId)
+            .Select(
+                s =>
+                    new
+                    {
+                        SeriesDate = !string.IsNullOrEmpty(s.DicomSeriesDate)
+                            ? s.DicomSeriesDate.Trim()
+                            : null,
+                        ShiftDate = s.DicomSeriesShiftDate.HasValue
+                            ? s.DicomSeriesShiftDate.Value.ToString("yyyyMMdd")
+                            : null
+                    }
+            )
+            .ToListAsync();
+
+        // 使用 HashSet 來收集並去重日期
+        var allDates = new HashSet<string>();
+        var allShiftDates = new HashSet<string>();
+
+        // 處理記錄日期
+        foreach (var record in recordDates)
+        {
+            if (!string.IsNullOrEmpty(record.ObservationDate))
+            {
+                allDates.Add(record.ObservationDate);
+            }
+            if (!string.IsNullOrEmpty(record.ShiftDate))
+            {
+                allShiftDates.Add(record.ShiftDate);
+            }
+        }
+
+        // 處理系列日期
+        foreach (var series in seriesDates)
+        {
+            if (!string.IsNullOrEmpty(series.SeriesDate))
+            {
+                allDates.Add(series.SeriesDate);
+            }
+            if (!string.IsNullOrEmpty(series.ShiftDate))
+            {
+                allShiftDates.Add(series.ShiftDate);
+            }
+        }
+
+        // 返回合併後的結果
+        return new CaseHistoryDto
+        {
+            CaseId = parsedCaseId,
+            CaseDate = allDates.OrderBy(x => x).ToArray(),
+            CaseShiftDate = allShiftDates.OrderBy(x => x).ToArray()
+        };
     }
 
-    public async Task<IEnumerable<CaseRecordDto>> GetCaseRecord(string caseId, string dateStr)
+    public async Task<IEnumerable<CaseRecordDto>> GetCaseRecord(
+        string caseId,
+        string dateStr,
+        bool isUsingShiftDate = false
+    )
     {
         var date = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture);
         var nextDate = date.AddDays(1);
@@ -96,8 +151,17 @@ public class CaseService
             from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()
             where
                 caseRecord.PtCasePuid == Guid.Parse(caseId)
-                && caseRecord.ObservationDateTime >= date
-                && caseRecord.ObservationDateTime < nextDate
+                && (
+                    !isUsingShiftDate
+                        ? (
+                            caseRecord.ObservationDateTime >= date
+                            && caseRecord.ObservationDateTime < nextDate
+                        )
+                        : (
+                            caseRecord.ObservationShiftDate >= date
+                            && caseRecord.ObservationShiftDate < nextDate
+                        )
+                )
             select new CaseRecordDto()
             {
                 Puid = caseRecord.Puid,
@@ -134,10 +198,16 @@ public class CaseService
         return results;
     }
 
-    public async Task<IEnumerable<CaseImageDto>> GetCaseImage(string caseId, string dateStr)
+    public async Task<IEnumerable<CaseImageDto>> GetCaseImage(
+        string caseId,
+        string dateStr,
+        bool isUsingShiftDate = false
+    )
     {
         var date = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture);
         var nextDate = date.AddDays(1);
+        var dateString = date.ToString("yyyyMMdd");
+        var nextDateString = nextDate.ToString("yyyyMMdd");
 
         var imagePath = _configuration.GetSection("ImageVirtualPath").Value;
         var query =
@@ -150,8 +220,17 @@ public class CaseService
             from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()
             where
                 caseSeriesMap.PtCasePuid == Guid.Parse(caseId)
-                && caseSeriesMap.DicomSeriesShiftDate >= date
-                && caseSeriesMap.DicomSeriesShiftDate < nextDate
+                && (
+                    !isUsingShiftDate
+                        ? (
+                            caseSeriesMap.DicomSeriesDate.CompareTo(dateString) >= 0
+                            && caseSeriesMap.DicomSeriesDate.CompareTo(nextDateString) < 0
+                        )
+                        : (
+                            caseSeriesMap.DicomSeriesShiftDate >= date
+                            && caseSeriesMap.DicomSeriesShiftDate < nextDate
+                        )
+                )
             select new CaseImageDto()
             {
                 CaseId = caseSeriesMap.PtCasePuid.ToString(),
