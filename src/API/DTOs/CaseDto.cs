@@ -14,4 +14,5 @@ public class CaseDto
     public string? CaseCloseCareProviderName { get; set; }
     public string? CareProviderId { get; set; }
     public string? CaseTypeShortLabel { get; set; }
+    public bool? IsCaseClosed { get; set; }
 }

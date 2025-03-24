@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.DTOs;
 using WoundCareApi.Persistence.Repository;
@@ -9,27 +10,26 @@ using WoundCareApi.src.Infrastructure.Persistence;
 namespace WoundCareApi.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class CaseReportDefineController : ControllerBase
+public class CaseRecordDefineController : ControllerBase
 {
-    private readonly ILogger<CaseReportDefineController> _logger;
+    private readonly ILogger<CaseRecordDefineController> _logger;
     private readonly IRepository<ReportDefine, CRSDbContext> _repository;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public CaseReportDefineController(
-        ILogger<CaseReportDefineController> logger,
-        IRepository<ReportDefine, CRSDbContext> repository,
-        IUnitOfWork unitOfWork
+    public CaseRecordDefineController(
+        ILogger<CaseRecordDefineController> logger,
+        IRepository<ReportDefine, CRSDbContext> repository
     )
     {
         _logger = logger;
         _repository = repository;
-        _unitOfWork = unitOfWork;
     }
 
     /// <summary>
     /// 根據報告ID獲取報告定義
     /// </summary>
+    [Authorize(AuthenticationSchemes = "Bearer,ApiKey")]
     [HttpGet("reportId/{reportId}")]
     public async Task<ActionResult<ReportDefineDTO>> GetReportDefine(string reportId)
     {
@@ -65,6 +65,7 @@ public class CaseReportDefineController : ControllerBase
     /// <summary>
     /// 獲取最新的報告定義
     /// </summary>
+    [Authorize(AuthenticationSchemes = "Bearer,ApiKey")]
     [HttpGet("latest")]
     public async Task<ActionResult<ReportDefineDTO>> GetReportDefineLatest()
     {

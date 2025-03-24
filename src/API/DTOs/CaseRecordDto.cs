@@ -1,4 +1,6 @@
-﻿namespace WoundCareApi.API.DTOs;
+﻿using System.Text.Json.Serialization;
+
+namespace WoundCareApi.API.DTOs;
 
 public class CaseRecordDto
 {
@@ -10,6 +12,11 @@ public class CaseRecordDto
     public DateTime? ObservationShiftDate { get; set; }
     public string? ShiftLongLabel { get; set; }
     public string? ShiftShortLabel { get; set; }
+    public string? CaseStatus { get; set; }
+
+    [JsonIgnore]
     public string? RawFormDefine { get; set; }
+
+    [JsonIgnore]
     public string? RawFormData { get; set; }
 }

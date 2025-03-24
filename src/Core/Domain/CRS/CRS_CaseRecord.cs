@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WoundCareApi.src.Core.Domain.CRS;
+﻿namespace WoundCareApi.Core.Domain.CRS;
 
 public partial class CRS_CaseRecord
 {

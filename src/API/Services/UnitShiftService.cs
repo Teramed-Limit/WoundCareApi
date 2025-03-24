@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using WoundCareApi.Core.Domain.CRS;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.src.Core.Domain.CRS;
 using WoundCareApi.src.Infrastructure.Persistence;

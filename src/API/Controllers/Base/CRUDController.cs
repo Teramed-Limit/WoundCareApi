@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WoundCareApi.Persistence.Repository;
 using WoundCareApi.Persistence.UnitOfWork;
@@ -6,7 +7,7 @@ using WoundCareApi.Persistence.UnitOfWork;
 namespace WoundCareApi.API.Controllers;
 
 // 基礎API控制器提供CRUD操作
-// [Authorize]
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class BaseApiController<T, C> : ControllerBase
