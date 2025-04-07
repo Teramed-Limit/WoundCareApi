@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.Application.DTOs;
+using WoundCareApi.Application.Services;
 using WoundCareApi.Application.Services.Interfaces;
 using WoundCareApi.Common.Types;
 
@@ -52,7 +53,7 @@ public class AuthController : ControllerBase
                     Id = user.UserID,
                     UserId = user.UserID,
                     CName = user.DoctorCName ?? "",
-                    EName = user.DoctorEName ?? ""
+                    EName = user.DoctorEName ?? "",
                 }
             }
         );

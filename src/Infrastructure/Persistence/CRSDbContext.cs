@@ -2,7 +2,7 @@
 using WoundCareApi.Core.Domain.Entities;
 
 namespace WoundCareApi.Infrastructure.Persistence;
-
+ 
 public partial class CRSDbContext : DbContext
 {
     public CRSDbContext() { }
@@ -695,7 +695,9 @@ public partial class CRSDbContext : DbContext
 
             entity.Property(e => e.Puid).ValueGeneratedNever();
             entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
+            entity.Property(e => e.FormDefineFile).HasMaxLength(256);
             entity.Property(e => e.ModifyDateTime).HasColumnType("datetime");
+            entity.Property(e => e.ReportName).HasMaxLength(64);
         });
 
         modelBuilder.Entity<RoleFunction>(entity =>

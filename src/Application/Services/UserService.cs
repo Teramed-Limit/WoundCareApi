@@ -7,7 +7,6 @@ using WoundCareApi.Application.Services.Interfaces;
 using WoundCareApi.Core.Domain.Entities;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
 namespace WoundCareApi.Application.Services
@@ -72,11 +71,18 @@ namespace WoundCareApi.Application.Services
         {
             var roles = await _roleService.GetUserRoleList(user.UserID);
 
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase, // 小寫開頭設定
+                WriteIndented = true // 讓輸出比較好看（可選）
+            };
+
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID),
                 new Claim(ClaimTypes.Name, user.UserID),
-                new Claim(ClaimTypes.Role, JsonSerializer.Serialize(roles)),
+                new Claim(ClaimTypes.Role, JsonSerializer.Serialize(roles, options)),
             };
 
             var accessToken = GenerateToken(claims, 15); // Access Token 15分鐘過期
@@ -90,17 +96,17 @@ namespace WoundCareApi.Application.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiresTest =
-                expirationMinutes == 15
-                    ? DateTime.Now.AddSeconds(5)
-                    : DateTime.Now.AddMinutes(expirationMinutes);
+            // var expiresTest =
+            //     expirationMinutes == 15
+            //         ? DateTime.Now.AddSeconds(5)
+            //         : DateTime.Now.AddMinutes(expirationMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: "teramed",
                 audience: "teramed",
                 claims: claims,
-                // expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
-                expires: expiresTest,
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
+                // expires: expiresTest,
                 signingCredentials: credentials
             );
 

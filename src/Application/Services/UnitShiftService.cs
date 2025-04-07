@@ -30,6 +30,7 @@ public class UnitShiftService
         {
             throw new Exception("Unit not found");
         }
+
         return unit;
     }
 
@@ -40,6 +41,7 @@ public class UnitShiftService
         {
             throw new Exception("Unit not found");
         }
+
         return await _unitShiftRepository.GetByConditionAsync(x => x.ClinicalUnitPuid == unitPuid);
     }
 }

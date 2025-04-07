@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using WoundCareApi.Application.Extensions;
 using WoundCareApi.Application.Services;
 using WoundCareApi.Application.Services.Interfaces;
-using WoundCareApi.Core.Application.Extensions;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Core.Repository;
 using WoundCareApi.Infrastructure.Authentication;
@@ -149,9 +149,9 @@ builder.Services.AddScoped<IUnitOfWork, GenericUnitOfWork<CRSDbContext>>();
 
 // 註冊 Repositories
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(GenericRepository<,>));
+builder.Services.AddScoped<CodeListRepository>();
 
 // 註冊 Services
-builder.Services.AddScoped<CaseMaintainService>();
 builder.Services.AddScoped<ShiftTimeService>();
 builder.Services.AddScoped<UnitShiftService>();
 builder.Services.AddScoped<IUserService, UserService>();

@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Application.UseCases.Cases.Commands.SetCaseStatus;
-using WoundCareApi.Core.Application.UseCases.Cases.Queries.GetCasesByPatient;
 using MediatR;
-using WoundCareApi.Core.Application.UseCases.Cases.Queries.GetCaseRecord;
-using WoundCareApi.Core.Application.UseCases.Cases.Queries.GetCaseImage;
-using WoundCareApi.Core.Application.UseCases.Cases.Queries.GetCaseHistory;
+using WoundCareApi.Application.UseCases.Cases.Commands.SetCaseStatus;
+using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseHistory;
+using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseImage;
+using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseRecord;
+using WoundCareApi.Application.UseCases.Cases.Queries.GetCasesByPatient;
 
 namespace WoundCareApi.API.Controllers;
 
@@ -136,7 +136,7 @@ public class CaseController : ControllerBase
                 return BadRequest("無效的日期格式，請使用yyyyMMdd格式");
             }
 
-            var res = await _mediator.Send(new GetCaseRecordQuery(caseId, date, isUsingShiftDate));
+            var res = await _mediator.Send(new GetCaseRecordDateQuery(caseId, date, isUsingShiftDate));
             return Ok(res.Data);
         }
         catch (Exception ex)

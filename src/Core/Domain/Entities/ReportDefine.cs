@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace WoundCareApi.Core.Domain.Entities;
 
@@ -9,11 +8,11 @@ public partial class ReportDefine
 
     public string? FormDefine { get; set; }
 
-    public DateTime? CreateDateTime { get; set; }
+    public DateTime CreateDateTime { get; set; }
 
     public DateTime? ModifyDateTime { get; set; }
 
-    public int? FormDefineFile { get; set; }
+    public string? FormDefineFile { get; set; }
 
-    public bool? isLatest { get; set; }
+    public string ReportName { get; set; } = null!;
 }

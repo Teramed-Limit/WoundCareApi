@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WoundCareApi.API.Controllers.Base;
 using WoundCareApi.Core.Domain.Entities;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Core.Repository;
@@ -21,7 +22,7 @@ public class CaseTypeController : BaseApiController<CRS_CfgCaseType, CRSDbContex
         IRepository<CRS_CfgCaseType, CRSDbContext> repository,
         IUnitOfWork unitOfWork
     )
-        : base(repository, unitOfWork)
+        : base(repository, unitOfWork, logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }

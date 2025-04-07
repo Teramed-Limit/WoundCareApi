@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WoundCareApi.API.Controllers.Base;
 using WoundCareApi.Application.Services;
 using WoundCareApi.Common.Types;
 using WoundCareApi.Core.Domain.Entities;
@@ -27,7 +28,7 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
         IUnitOfWork unitOfWork,
         ShiftTimeService shiftTimeService
     )
-        : base(repository, unitOfWork)
+        : base(repository, unitOfWork, logger)
     {
         _logger = logger;
         _clinicalUnitRepository = clinicalUnitRepository;
@@ -38,7 +39,7 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
     [HttpGet("{id}/clinicalunit")]
     public async Task<ActionResult<CRS_SysClinicalUnit>> GetClinicalUnitByShiftId(Guid id)
     {
-        var shift = await _repository.GetByIdAsync(id);
+        var shift = await Repository.GetByIdAsync(id);
         if (shift == null)
         {
             return NotFound($"未找到ID為 {id} 的輪班資訊");
@@ -69,7 +70,7 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
 
         // 獲取與該臨床單位相關的班別
         var shifts = (
-            await _repository.GetByConditionAsync(s => s.ClinicalUnitPuid == clinicalUnitPuid)
+            await Repository.GetByConditionAsync(s => s.ClinicalUnitPuid == clinicalUnitPuid)
         ).ToList();
 
         if (!shifts.Any())

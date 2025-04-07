@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using WoundCareApi.API.Controllers.Base;
 using WoundCareApi.Core.Domain.Entities;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Core.Repository;
@@ -28,7 +29,7 @@ public class ClinicalUnitController : BaseApiController<CRS_SysClinicalUnit, CRS
         IRepository<CRS_SysClinicalUnitShift, CRSDbContext> shiftRepository,
         IUnitOfWork unitOfWork
     )
-        : base(repository, unitOfWork)
+        : base(repository, unitOfWork, logger)
     {
         _logger = logger;
         _shiftRepository = shiftRepository;

@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.Controllers.Base;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Application.UseCases.CaseRecords.Commands.InsertCaseRecord;
-using WoundCareApi.Core.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
-using WoundCareApi.Core.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
 using MediatR;
+using WoundCareApi.Application.UseCases.CaseRecords.Commands.InsertCaseRecord;
+using WoundCareApi.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
+using WoundCareApi.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
 
 namespace WoundCareApi.API.Controllers;
 
@@ -23,15 +23,15 @@ public class CaseRecordController : BaseController
     }
 
     [Authorize(AuthenticationSchemes = "Bearer,ApiKey")]
-    [HttpGet("reportId/{reportId}")]
-    public async Task<ActionResult<CaseRecordDto>> GetReport(string reportId)
+    [HttpGet("caseRecordId/{caseRecordId}")]
+    public async Task<ActionResult<CaseRecordDto>> GetReport(string caseRecordId)
     {
-        if (!Guid.TryParse(reportId, out Guid reportGuid))
+        if (!Guid.TryParse(caseRecordId, out Guid recordGuid))
         {
             return BadRequest("無效的報告 ID 格式");
         }
 
-        var query = new GetCaseRecordByIdQuery(reportGuid);
+        var query = new GetCaseRecordByIdQuery(recordGuid);
         var result = await _mediator.Send(query);
 
         if (!result.Succeeded)
@@ -55,11 +55,7 @@ public class CaseRecordController : BaseController
             return BadRequest(result.Error);
         }
 
-        return CreatedAtAction(
-            nameof(GetReport),
-            new { reportId = result.Data.Puid.ToString() },
-            result.Data
-        );
+        return StatusCode(201, new { caseRecordId = result.Data });
     }
 
     [HttpPut("reportId/{reportId}")]

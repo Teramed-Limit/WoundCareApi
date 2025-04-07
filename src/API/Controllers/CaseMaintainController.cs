@@ -1,7 +1,10 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Application.Services;
+using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveCase;
+using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveRecordCase;
+using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveSeriesToCase;
 
 namespace WoundCareApi.API.Controllers;
 
@@ -13,15 +16,12 @@ namespace WoundCareApi.API.Controllers;
 [Route("api/[controller]")]
 public class CaseMaintainController : BaseController
 {
-    private readonly CaseMaintainService _caseMaintainService;
+    private readonly IMediator _mediator;
 
-    public CaseMaintainController(
-        ILogger<CaseMaintainController> logger,
-        CaseMaintainService caseMaintainService
-    )
+    public CaseMaintainController(ILogger<CaseMaintainController> logger, IMediator mediator)
         : base(logger)
     {
-        _caseMaintainService = caseMaintainService;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -36,12 +36,21 @@ public class CaseMaintainController : BaseController
         try
         {
             var userId = GetUserId();
-            await _caseMaintainService.MoveCase(fromCaseId, toCaseId, userId);
+            var result = await _mediator.Send(
+                new MoveCaseCommand
+                {
+                    FromCaseId = fromCaseId,
+                    ToCaseId = toCaseId,
+                    UserId = userId
+                }
+            );
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Error);
+            }
+
             return Success("案例移動成功");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -61,12 +70,21 @@ public class CaseMaintainController : BaseController
         try
         {
             var userId = GetUserId();
-            await _caseMaintainService.MoveSeriesToCase(seriesInstanceUid, toCaseId, userId);
+            var result = await _mediator.Send(
+                new MoveSeriesToCaseCommand
+                {
+                    SeriesInstanceUid = seriesInstanceUid,
+                    ToCaseId = toCaseId,
+                    UserId = userId
+                }
+            );
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Error);
+            }
+
             return Success("系列移動成功");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -86,12 +104,21 @@ public class CaseMaintainController : BaseController
         try
         {
             var userId = GetUserId();
-            await _caseMaintainService.MoveRecordCase(recordId, toCaseId, userId);
+            var result = await _mediator.Send(
+                new MoveRecordCaseCommand
+                {
+                    RecordId = recordId,
+                    ToCaseId = toCaseId,
+                    UserId = userId
+                }
+            );
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Error);
+            }
+
             return Success("記錄移動成功");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {

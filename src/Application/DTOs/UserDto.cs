@@ -1,4 +1,6 @@
-﻿namespace WoundCareApi.Application.DTOs;
+﻿using WoundCareApi.Core.Domain.Entities;
+
+namespace WoundCareApi.Application.DTOs;
 
 public class UserDto
 {
@@ -6,4 +8,6 @@ public class UserDto
     public string UserId { get; set; }
     public string CName { get; set; }
     public string EName { get; set; }
+
+    public List<RoleFunction> RoleFunctionList { get; set; } = new List<RoleFunction>();
 }

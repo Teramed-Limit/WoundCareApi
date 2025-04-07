@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WoundCareApi.API.Controllers.Base;
 using WoundCareApi.Core.Domain.Entities;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
@@ -19,7 +20,7 @@ public class CaseBodyLocationController : BaseApiController<CRS_CfgBodyLocation,
         IRepository<CRS_CfgBodyLocation, CRSDbContext> repository,
         IUnitOfWork unitOfWork
     )
-        : base(repository, unitOfWork)
+        : base(repository, unitOfWork, logger)
     {
         _logger = logger;
     }

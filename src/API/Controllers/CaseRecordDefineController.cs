@@ -5,6 +5,7 @@ using WoundCareApi.Application.DTOs;
 using WoundCareApi.Core.Domain.Entities;
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
+using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
 namespace WoundCareApi.API.Controllers;
 
@@ -15,14 +16,17 @@ public class CaseRecordDefineController : ControllerBase
 {
     private readonly ILogger<CaseRecordDefineController> _logger;
     private readonly IRepository<ReportDefine, CRSDbContext> _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CaseRecordDefineController(
         ILogger<CaseRecordDefineController> logger,
-        IRepository<ReportDefine, CRSDbContext> repository
+        IRepository<ReportDefine, CRSDbContext> repository,
+        IUnitOfWork unitOfWork
     )
     {
         _logger = logger;
         _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     /// <summary>
@@ -65,13 +69,16 @@ public class CaseRecordDefineController : ControllerBase
     /// 獲取最新的報告定義
     /// </summary>
     [Authorize(AuthenticationSchemes = "Bearer,ApiKey")]
-    [HttpGet("latest")]
-    public async Task<ActionResult<ReportDefineDto>> GetReportDefineLatest()
+    [HttpGet("report/{report}/latest")]
+    public async Task<ActionResult<ReportDefineDto>> GetReportDefineLatest(string report)
     {
         try
         {
-            var reportDefine = await _repository.GetByConditionAsync(x => x.isLatest == true);
-            var reportDto = reportDefine.Select(ToReportDefineDto).FirstOrDefault();
+            var reportDefine = await _repository.GetByConditionAsync(x => x.ReportName == report);
+            var reportDto = reportDefine
+                .OrderByDescending(x => x.CreateDateTime)
+                .Select(ToReportDefineDto)
+                .FirstOrDefault();
 
             if (reportDto == null)
             {
@@ -89,22 +96,105 @@ public class CaseRecordDefineController : ControllerBase
     }
 
     /// <summary>
+    /// 獲取所有的報告定義
+    /// </summary>
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpGet("all/latest")]
+    public async Task<ActionResult<Dictionary<string, ReportDefineDto>>> GetReportDefineList()
+    {
+        try
+        {
+            var reportDefineList = await _repository.GetAllAsync();
+            var reportListDto = reportDefineList
+                .OrderByDescending(x => x.CreateDateTime)
+                .Select(ToReportDefineDto)
+                .GroupBy(x => x.ReportName)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            return Ok(reportListDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting all report define");
+            return StatusCode(500, "獲取所有報告定義時發生錯誤");
+        }
+    }
+
+    /// <summary>
+    /// 儲存報告定義
+    /// </summary>
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpPost("newReport")]
+    public async Task<ActionResult<Dictionary<string, ReportDefineDto>>> NewReportDefine(
+        [FromBody] ReportDefineDto reportDefineDto
+    )
+    {
+        try
+        {
+            await _repository.AddAsync(
+                new ReportDefine()
+                {
+                    Puid = Guid.NewGuid(),
+                    ReportName = reportDefineDto.ReportName,
+                    FormDefine = JsonSerializer.Serialize(
+                        new
+                        {
+                            headerDefine = reportDefineDto.HeaderDefine,
+                            formDefine = reportDefineDto.FormDefine,
+                            footerDefine = reportDefineDto.FooterDefine
+                        }
+                    ),
+                    CreateDateTime = DateTime.Now
+                }
+            );
+            await _unitOfWork.SaveAsync();
+            return Ok();
+        }
+        catch (FormatException ex)
+        {
+            _logger.LogError(ex, "Error occurred while saving report define");
+            return StatusCode(500, "儲存報告定義時發生錯誤");
+        }
+    }
+
+    /// <summary>
     /// 將 ReportDefine 轉換為 ReportDefineDTO
     /// </summary>
     private static ReportDefineDto ToReportDefineDto(ReportDefine reportDefine)
     {
         Dictionary<string, object> formDefine;
+        Dictionary<string, object> headerDefine = new Dictionary<string, object>();
+        Dictionary<string, object> footerDefine = new Dictionary<string, object>();
+
         try
         {
-            formDefine =
-                JsonSerializer.Deserialize<Dictionary<string, object>>(reportDefine.FormDefine)
-                ?? new Dictionary<string, object>();
+            var fullDefine = JsonSerializer.Deserialize<
+                Dictionary<string, Dictionary<string, object>>
+            >(reportDefine.FormDefine);
+            if (fullDefine != null)
+            {
+                fullDefine.TryGetValue("headerDefine", out headerDefine);
+                fullDefine.TryGetValue("formDefine", out formDefine);
+                fullDefine.TryGetValue("footerDefine", out footerDefine);
+            }
+            else
+            {
+                formDefine = new Dictionary<string, object>();
+            }
         }
         catch (JsonException)
         {
             formDefine = new Dictionary<string, object>();
         }
 
-        return new ReportDefineDto { Puid = reportDefine.Puid, FormDefine = formDefine };
+        return new ReportDefineDto
+        {
+            Puid = reportDefine.Puid,
+            FormDefine = formDefine,
+            HeaderDefine = headerDefine,
+            FooterDefine = footerDefine,
+            ReportName = reportDefine.ReportName,
+            CreateDateTime = reportDefine.CreateDateTime
+        };
     }
 }

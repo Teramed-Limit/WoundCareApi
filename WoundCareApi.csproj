@@ -28,9 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Core\Application\UseCases\CaseMaintain\Commands\" />
-    <Folder Include="src\Core\Application\UseCases\CaseMaintain\Queries\" />
-    <Folder Include="src\Core\Application\UseCases\Cases\Queries\" />
     <Folder Include="src\Core\Domain\Entities\" />
   </ItemGroup>
 

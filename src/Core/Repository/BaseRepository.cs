@@ -43,7 +43,7 @@ public class GenericRepository<T, C> : IRepository<T, C>
 
         // 獲取實體類型的主鍵屬性
         var keyProperties = _context.Model
-            .FindEntityType(typeof(T)) 
+            .FindEntityType(typeof(T))
             .FindPrimaryKey()
             .Properties.Select(p => p.Name)
             .ToHashSet();

@@ -8,7 +8,7 @@ namespace WoundCareApi.Infrastructure.Authentication;
 public class ApiKeyAuthHandler : AuthenticationHandler<ApiKeyAuthOptions>
 {
     private const string ApiKeyHeaderName = "CareSystem-API-Key";
-    private const string ValidApiKey = "12345"; // 在這裡設定您的 API Key
+    private const string ValidApiKey = "9e1f84d18b7fa75c7d349512e55d6d23f1c5c6a32017a7c9089df53a173ad6bc"; // 在這裡設定您的 API Key
 
     public ApiKeyAuthHandler(
         IOptionsMonitor<ApiKeyAuthOptions> options,
