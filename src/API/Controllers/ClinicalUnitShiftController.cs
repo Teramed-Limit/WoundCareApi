@@ -1,14 +1,19 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.API.Services;
+using WoundCareApi.API.Controllers.Base;
+using WoundCareApi.Application.Services;
 using WoundCareApi.Common.Types;
-using WoundCareApi.Persistence.Repository;
-using WoundCareApi.Persistence.UnitOfWork;
-using WoundCareApi.src.Core.Domain.CRS;
-using WoundCareApi.src.Infrastructure.Persistence;
+using WoundCareApi.Core.Domain.Entities;
+using WoundCareApi.Core.Domain.Interfaces;
+using WoundCareApi.Core.Repository;
+using WoundCareApi.Infrastructure.Persistence;
+using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
+using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
 namespace WoundCareApi.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnitShift, CRSDbContext>
 {
@@ -23,43 +28,18 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
         IUnitOfWork unitOfWork,
         ShiftTimeService shiftTimeService
     )
-        : base(repository, unitOfWork)
+        : base(repository, unitOfWork, logger)
     {
         _logger = logger;
         _clinicalUnitRepository = clinicalUnitRepository;
         _shiftTimeService = shiftTimeService;
     }
 
-    // 獲取所有輪班資訊
-    [HttpGet]
-    public override async Task<ActionResult<IEnumerable<CRS_SysClinicalUnitShift>>> GetAll(
-        string? orderBy = null
-    )
-    {
-        return await base.GetAll(orderBy);
-    }
-
-    // 獲取特定ID的輪班資訊
-    [HttpGet("{id}")]
-    public override async Task<ActionResult<CRS_SysClinicalUnitShift>> GetById(object id)
-    {
-        return await base.GetById(id);
-    }
-
-    // 根據查詢條件獲取輪班資訊
-    [HttpGet("query")]
-    public override async Task<ActionResult<IEnumerable<CRS_SysClinicalUnitShift>>> GetFromQuery(
-        [FromQuery] string? filter
-    )
-    {
-        return await base.GetFromQuery(filter);
-    }
-
     // 獲取特定輪班對應的臨床單位資訊
     [HttpGet("{id}/clinicalunit")]
     public async Task<ActionResult<CRS_SysClinicalUnit>> GetClinicalUnitByShiftId(Guid id)
     {
-        var shift = await _repository.GetByIdAsync(id);
+        var shift = await Repository.GetByIdAsync(id);
         if (shift == null)
         {
             return NotFound($"未找到ID為 {id} 的輪班資訊");
@@ -90,9 +70,7 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
 
         // 獲取與該臨床單位相關的班別
         var shifts = (
-            await _repository.GetByConditionAsync(
-                s => s.ClinicalUnitPuid == clinicalUnitPuid
-            )
+            await Repository.GetByConditionAsync(s => s.ClinicalUnitPuid == clinicalUnitPuid)
         ).ToList();
 
         if (!shifts.Any())

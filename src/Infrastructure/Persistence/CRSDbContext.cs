@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using WoundCareApi.src.Core.Domain.CRS;
+﻿using Microsoft.EntityFrameworkCore;
+using WoundCareApi.Core.Domain.Entities;
 
-namespace WoundCareApi.src.Infrastructure.Persistence;
+namespace WoundCareApi.Infrastructure.Persistence;
 
 public partial class CRSDbContext : DbContext
 {
@@ -45,6 +43,8 @@ public partial class CRSDbContext : DbContext
     public virtual DbSet<CRS_SysInstitution> CRS_SysInstitutions { get; set; }
 
     public virtual DbSet<CRS_SysUserClinicalUnit> CRS_SysUserClinicalUnits { get; set; }
+
+    public virtual DbSet<CodeList> CodeLists { get; set; }
 
     public virtual DbSet<DicomDestinationNode> DicomDestinationNodes { get; set; }
 
@@ -91,11 +91,16 @@ public partial class CRSDbContext : DbContext
     public virtual DbSet<vwPatientBedLocationCurrent> vwPatientBedLocationCurrents { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        =>
-        optionsBuilder.UseSqlServer(
-            "Server=localhost;Database=CRS;Trusted_Connection=True;TrustServerCertificate=True;"
-        );
+    {
+        optionsBuilder.EnableSensitiveDataLogging(false);
+        if (!optionsBuilder.IsConfigured)
+        {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+            optionsBuilder.UseSqlServer(
+                "Server=localhost;Database=CRS;Trusted_Connection=True;TrustServerCertificate=True;"
+            );
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -174,10 +179,14 @@ public partial class CRSDbContext : DbContext
             entity.ToTable("CRS_CareSeriesMap");
 
             entity.Property(e => e.Puid).ValueGeneratedNever();
+            entity.Property(e => e.CreateDateTime).HasMaxLength(16).IsFixedLength();
+            entity.Property(e => e.CreateUser).HasMaxLength(32).IsFixedLength();
             entity.Property(e => e.DicomSeriesDate).HasMaxLength(50).IsUnicode(false);
             entity.Property(e => e.DicomSeriesShiftDate).HasColumnType("datetime");
             entity.Property(e => e.DicomSeriesTime).HasMaxLength(50).IsUnicode(false);
             entity.Property(e => e.DicomSeriesUid).HasMaxLength(128).IsUnicode(false);
+            entity.Property(e => e.ModifiedDateTime).HasMaxLength(50);
+            entity.Property(e => e.ModifiedUser).HasMaxLength(50);
             entity.Property(e => e.StoreTime).HasColumnType("datetime");
         });
 
@@ -195,9 +204,13 @@ public partial class CRSDbContext : DbContext
             entity.Property(e => e.CaseCloseTime).HasColumnType("datetime");
             entity.Property(e => e.CaseEntityId).HasMaxLength(32);
             entity.Property(e => e.CaseLocation).HasMaxLength(64);
+            entity.Property(e => e.CreateDateTime).HasMaxLength(16).IsFixedLength();
+            entity.Property(e => e.CreateUser).HasMaxLength(32).IsFixedLength();
             entity.Property(e => e.EncounterNumber).HasMaxLength(32);
             entity.Property(e => e.LIfeTimeNumber).HasMaxLength(32);
             entity.Property(e => e.LoadTime).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDateTime).HasMaxLength(50);
+            entity.Property(e => e.ModifiedUser).HasMaxLength(50);
             entity.Property(e => e.StoreTime).HasColumnType("datetime");
         });
 
@@ -210,8 +223,12 @@ public partial class CRSDbContext : DbContext
             entity.Property(e => e.Puid).ValueGeneratedNever();
             entity.Property(e => e.CareProviderId).HasMaxLength(32);
             entity.Property(e => e.Comment).HasMaxLength(2000);
+            entity.Property(e => e.CreateDateTime).HasMaxLength(16).IsFixedLength();
+            entity.Property(e => e.CreateUser).HasMaxLength(32).IsFixedLength();
             entity.Property(e => e.FormData).HasMaxLength(4000);
             entity.Property(e => e.LoadTime).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDateTime).HasMaxLength(50);
+            entity.Property(e => e.ModifiedUser).HasMaxLength(50);
             entity.Property(e => e.ObservationDateTime).HasColumnType("datetime");
             entity.Property(e => e.ObservationShiftDate).HasColumnType("datetime");
             entity.Property(e => e.StoreTime).HasColumnType("datetime");
@@ -368,6 +385,18 @@ public partial class CRSDbContext : DbContext
         modelBuilder.Entity<CRS_SysUserClinicalUnit>(entity =>
         {
             entity.HasNoKey().ToTable("CRS_SysUserClinicalUnit");
+        });
+
+        modelBuilder.Entity<CodeList>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CodeOption");
+
+            entity.ToTable("CodeList");
+
+            entity.Property(e => e.CodeName).HasMaxLength(32);
+            entity.Property(e => e.Label).HasMaxLength(32);
+            entity.Property(e => e.ParentCodeValue).HasMaxLength(32);
+            entity.Property(e => e.Value).HasMaxLength(32);
         });
 
         modelBuilder.Entity<DicomDestinationNode>(entity =>
@@ -656,7 +685,6 @@ public partial class CRSDbContext : DbContext
             entity.Property(e => e.JobTitle).HasMaxLength(32);
             entity.Property(e => e.ModifiedDateTime).HasMaxLength(16);
             entity.Property(e => e.ModifiedUser).HasMaxLength(32).IsFixedLength();
-            entity.Property(e => e.RefreshToken).HasMaxLength(64);
             entity.Property(e => e.RefreshTokenExpiryTime).HasColumnType("datetime");
             entity.Property(e => e.RoleList).HasMaxLength(1024);
             entity.Property(e => e.Title).HasMaxLength(64);
@@ -672,7 +700,9 @@ public partial class CRSDbContext : DbContext
 
             entity.Property(e => e.Puid).ValueGeneratedNever();
             entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
+            entity.Property(e => e.FormDefineFile).HasMaxLength(256);
             entity.Property(e => e.ModifyDateTime).HasColumnType("datetime");
+            entity.Property(e => e.ReportName).HasMaxLength(64);
         });
 
         modelBuilder.Entity<RoleFunction>(entity =>

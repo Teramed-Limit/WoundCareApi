@@ -24,7 +24,7 @@
 
 `dotnet ef dbcontext scaffold "Server=localhost;Database=CRSPatientDataDB1;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --context CRSPatientDataDbContext --context-dir src/Infrastructure/Persistence --output-dir src/Core/Domain/CRSPatientDataDB --use-database-names --force`
 
-`dotnet ef dbcontext scaffold "Server=localhost;Database=CRS;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --context CRSDbContext --context-dir src/Infrastructure/Persistence --output-dir src/Core/Domain/CRS --use-database-names --force`
+`dotnet ef dbcontext scaffold "Server=localhost;Database=CRS;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --context CRSDbContext --context-dir src/Infrastructure/Persistence --output-dir src/Core/Domain/Entities --use-database-names --force`
 
 ## 參考
 

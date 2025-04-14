@@ -5,11 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using WoundCareApi.AutoMapper;
-using WoundCareApi.Persistence.UnitOfWork;
-using WoundCareApi.Persistence.Repository;
-using WoundCareApi.src.Infrastructure.Persistence;
-using WoundCareApi.API.Services;
+using WoundCareApi.Application.Extensions;
+using WoundCareApi.Application.Services;
+using WoundCareApi.Application.Services.Interfaces;
+using WoundCareApi.Core.Domain.Interfaces;
+using WoundCareApi.Core.Repository;
+using WoundCareApi.Infrastructure.Authentication;
+using WoundCareApi.Infrastructure.Mappings;
+using WoundCareApi.Infrastructure.Persistence;
+using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
+using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,22 +78,27 @@ builder.Services.AddSwaggerGen(c =>
 
 // 配置 JWT 認證
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
+            ValidIssuer = "teramed",
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidAudience = "teramed",
+            ValidateLifetime = true, // 驗證時間
+            RequireExpirationTime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
-            )
+            ClockSkew = TimeSpan.FromSeconds(3), // 時間偏移量
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(UserService.Secret))
         };
-    });
+    })
+    .AddScheme<ApiKeyAuthOptions, ApiKeyAuthHandler>("ApiKey", _ => { });
 
 // 設定靜態文件服務
 builder.Services.AddSpaStaticFiles(configuration =>
@@ -96,27 +106,24 @@ builder.Services.AddSpaStaticFiles(configuration =>
     configuration.RootPath = "ClientApp/build";
 });
 
-// 配置 CORS
+// 配置 CORS 以允許所有來源的請求
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
     options.AddPolicy(
         "AllowAll",
-        builder =>
+        policy =>
         {
-            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         }
     );
 });
 
 // 配置多個 DbContext
+var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<CRSDbContext>(options =>
 {
-    options
-        .UseSqlServer(
-            builder.Configuration.GetConnectionString("CRSConnection"),
-            b => b.MigrationsAssembly("WoundCareApi.src.Infrastructure.Persistence")
-        )
-        .EnableSensitiveDataLogging();
+    options.UseSqlServer(connectionString).EnableSensitiveDataLogging();
     if (Convert.ToBoolean(configuration["SQLDebug"]))
         options.LogTo(Console.WriteLine);
 });
@@ -136,12 +143,14 @@ builder.Services.AddScoped<IUnitOfWork, GenericUnitOfWork<CRSDbContext>>();
 
 // 註冊 Repositories
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(GenericRepository<,>));
+builder.Services.AddScoped<CodeListRepository>();
 
 // 註冊 Services
-builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ShiftTimeService>();
 builder.Services.AddScoped<UnitShiftService>();
-builder.Services.AddScoped<ICaseReportService, CaseReportService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<RoleService>();
+builder.Services.AddMediatR();
 
 var app = builder.Build();
 
@@ -161,7 +170,7 @@ if (app.Environment.IsDevelopment())
 app.UseDefaultFiles();
 app.UseSpaStaticFiles();
 
-// app.UseRouting();
+app.UseRouting();
 
 // 添加認證中間件
 app.UseHttpsRedirection();

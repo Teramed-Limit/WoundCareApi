@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Utils;
+﻿namespace WoundCareApi.Common.Extensions;
 
 public static class LoggerExtensions
 {

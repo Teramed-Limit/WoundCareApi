@@ -1,8 +1,9 @@
 using AutoMapper;
-using WoundCareApi.API.DTOs;
-using WoundCareApi.src.Core.Domain.CRS;
+using WoundCareApi.Application.DTOs;
+using WoundCareApi.Core.Domain.Entities;
+using System.Linq;
 
-namespace WoundCareApi.AutoMapper;
+namespace WoundCareApi.Infrastructure.Mappings;
 
 public class AutoMapperProfiles : Profile
 {
@@ -17,5 +18,52 @@ public class AutoMapperProfiles : Profile
         CreateMap<object, CaseRecordDto>()
             .ForMember(dest => dest.FormDefine, opt => opt.Ignore())
             .ForMember(dest => dest.FormData, opt => opt.Ignore());
+
+        CreateMap<LoginUserDatum, UserAccountDto>()
+            .ForMember(
+                dest => dest.RoleList,
+                opt =>
+                    opt.MapFrom(
+                        src =>
+                            string.IsNullOrEmpty(src.RoleList)
+                                ? null
+                                : src.RoleList.Split(new[] { ',' }).Select(r => r.Trim()).ToList()
+                    )
+            )
+            .ForMember(
+                dest => dest.UserGroupList,
+                opt =>
+                    opt.MapFrom(
+                        src =>
+                            string.IsNullOrEmpty(src.UserGroupList)
+                                ? null
+                                : src.UserGroupList
+                                    .Split(new[] { ',' })
+                                    .Select(g => g.Trim())
+                                    .ToList()
+                    )
+            );
+
+        CreateMap<UserAccountDto, LoginUserDatum>()
+            .ForMember(
+                dest => dest.RoleList,
+                opt =>
+                    opt.MapFrom(
+                        src =>
+                            src.RoleList == null || !src.RoleList.Any()
+                                ? null
+                                : string.Join(",", src.RoleList)
+                    )
+            )
+            .ForMember(
+                dest => dest.UserGroupList,
+                opt =>
+                    opt.MapFrom(
+                        src =>
+                            src.UserGroupList == null || !src.UserGroupList.Any()
+                                ? null
+                                : string.Join(",", src.UserGroupList)
+                    )
+            );
     }
 }
