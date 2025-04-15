@@ -49,11 +49,11 @@ public class MoveSeriesToCaseCommandHandler : IRequestHandler<MoveSeriesToCaseCo
             );
             try
             {
-                var series = await _context.CRS_CareSeriesMaps.FirstOrDefaultAsync(
+                var series = await _context.DicomSeriesMaps.FirstOrDefaultAsync(
                     x => x.DicomSeriesUid == request.SeriesInstanceUid,
                     cancellationToken
                 );
-                var toCase = await _context.CRS_Cases.FindAsync(
+                var toCase = await _context.PtCases.FindAsync(
                     new object[] { toCaseGuid },
                     cancellationToken
                 );

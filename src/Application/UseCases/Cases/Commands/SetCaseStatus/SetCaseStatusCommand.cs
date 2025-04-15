@@ -22,7 +22,7 @@ public class SetCaseStatusCommandHandler : IRequestHandler<SetCaseStatusCommand,
         CancellationToken cancellationToken
     )
     {
-        var case_ = await _context.CRS_Cases.FindAsync(request.CaseId);
+        var case_ = await _context.PtCases.FindAsync(request.CaseId);
 
         if (case_ == null)
         {

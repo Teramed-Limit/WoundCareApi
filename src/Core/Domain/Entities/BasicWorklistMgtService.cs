@@ -1,6 +1,4 @@
-﻿namespace WoundCareApi.Core.Domain.Entities;
-
-public partial class BasicWorklistMgtService
+﻿public partial class BasicWorklistMgtService
 {
     public string? HISProcedureID { get; set; }
 

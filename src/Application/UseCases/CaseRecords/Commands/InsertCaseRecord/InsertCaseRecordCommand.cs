@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WoundCareApi.Application.Common.Results;
 using WoundCareApi.Application.DTOs;
 using WoundCareApi.Application.Services;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
@@ -18,14 +18,14 @@ public record InsertCaseRecordCommand(CaseFormDataDto FormData, string UserId)
 public class InsertCaseRecordCommandHandler
     : IRequestHandler<InsertCaseRecordCommand, Result<string>>
 {
-    private readonly IRepository<CRS_CaseRecord, CRSDbContext> _repository;
+    private readonly IRepository<PtCaseRecord, CRSDbContext> _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ShiftTimeService _shiftTimeService;
     private readonly UnitShiftService _unitShiftService;
     private readonly CRSDbContext _context;
 
     public InsertCaseRecordCommandHandler(
-        IRepository<CRS_CaseRecord, CRSDbContext> repository,
+        IRepository<PtCaseRecord, CRSDbContext> repository,
         IUnitOfWork unitOfWork,
         ShiftTimeService shiftTimeService,
         UnitShiftService unitShiftService,
@@ -51,7 +51,7 @@ public class InsertCaseRecordCommandHandler
                 await ProcessDateTimeAndShiftInfoAsync(request.FormData);
 
             // 創建報告記錄
-            var newReport = new CRS_CaseRecord
+            var newReport = new PtCaseRecord()
             {
                 Puid = Guid.NewGuid(),
                 PtCasePuid = request.FormData.CaseId,
@@ -70,10 +70,10 @@ public class InsertCaseRecordCommandHandler
 
             // 返回新建的報告
             // var query =
-            //     from caseRecord in _context.CRS_CaseRecords
+            //     from caseRecord in _context.CaseRecords
             //     join caseRecordFormDefine in _context.ReportDefines
             //         on caseRecord.FormDefinePuid equals caseRecordFormDefine.Puid
-            //     join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+            //     join clinicalUnitShift in _context.SysClinicalUnitShifts
             //         on caseRecord.ClinicalUnitShiftPuid equals clinicalUnitShift.Puid
             //         into clinicalShiftGroup
             //     from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()

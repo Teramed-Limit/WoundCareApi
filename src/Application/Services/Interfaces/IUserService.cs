@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using WoundCareApi.Core.Domain.Entities;
+
 
 namespace WoundCareApi.Application.Services.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Repository;
 using WoundCareApi.Infrastructure.Persistence;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;

@@ -48,8 +48,8 @@ public class GetCaseRecordQueryHandler
             var nextDate = date.AddDays(1);
 
             var query =
-                from caseRecord in _context.CRS_CaseRecords
-                join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+                from caseRecord in _context.PtCaseRecords
+                join clinicalUnitShift in _context.SysClinicalUnitShifts
                     on caseRecord.ClinicalUnitShiftPuid equals clinicalUnitShift.Puid
                     into clinicalShiftGroup
                 from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()

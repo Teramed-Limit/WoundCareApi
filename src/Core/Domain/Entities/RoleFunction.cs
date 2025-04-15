@@ -1,4 +1,7 @@
-﻿namespace WoundCareApi.Core.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+
 
 public partial class RoleFunction
 {

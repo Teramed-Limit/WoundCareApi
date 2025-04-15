@@ -27,7 +27,7 @@ public class GetCaseRecordByIdQueryHandler
         try
         {
             var query =
-                from caseRecord in _context.CRS_CaseRecords
+                from caseRecord in _context.PtCaseRecords
                 join caseRecordFormDefine in _context.ReportDefines
                     on caseRecord.FormDefinePuid equals caseRecordFormDefine.Puid
                 where caseRecord.Puid == request.ReportId

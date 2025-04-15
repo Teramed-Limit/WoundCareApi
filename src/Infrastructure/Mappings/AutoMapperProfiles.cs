@@ -1,7 +1,5 @@
 using AutoMapper;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using System.Linq;
 
 namespace WoundCareApi.Infrastructure.Mappings;
 
@@ -9,7 +7,7 @@ public class AutoMapperProfiles : Profile
 {
     public AutoMapperProfiles()
     {
-        CreateMap<CRS_Case, CaseDto>()
+        CreateMap<PtCase, CaseDto>()
             .ForMember(
                 dest => dest.CaseTypeShortLabel,
                 opt => opt.Ignore() // 忽略這個屬性，因為它來自 join

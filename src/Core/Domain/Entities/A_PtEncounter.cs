@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WoundCareApi.Core.Domain.Entities;
-
-public partial class CRS_A_PtEncounter
+﻿public partial class A_PtEncounter
 {
     public Guid Puid { get; set; }
 

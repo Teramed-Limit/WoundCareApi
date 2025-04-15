@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Core.Repository;
 using WoundCareApi.Infrastructure.Persistence;
@@ -16,11 +16,11 @@ namespace WoundCareApi.API.Controllers;
 public class PatientEncounterController : ControllerBase
 {
     private readonly ILogger<PatientEncounterController> _logger;
-    private readonly IRepository<CRS_A_PtEncounter, CRSDbContext> _repository;
+    private readonly IRepository<A_PtEncounter, CRSDbContext> _repository;
 
     public PatientEncounterController(
         ILogger<PatientEncounterController> logger,
-        IRepository<CRS_A_PtEncounter, CRSDbContext> repository
+        IRepository<A_PtEncounter, CRSDbContext> repository
     )
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -33,7 +33,7 @@ public class PatientEncounterController : ControllerBase
     /// <param name="clinicalUnitId">臨床單位 ID (GUID 格式)</param>
     /// <returns>病患就醫紀錄列表</returns>
     [HttpGet("clinicalUnitId/{clinicalUnitId}")]
-    public async Task<ActionResult<IEnumerable<CRS_A_PtEncounter>>> GetByClinicalUnitId(
+    public async Task<ActionResult<IEnumerable<A_PtEncounter>>> GetByClinicalUnitId(
         string clinicalUnitId
     )
     {

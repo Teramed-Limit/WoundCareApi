@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Infrastructure.Persistence;
 
 namespace WoundCareApi.Application.Services;

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Core.Repository;
 using WoundCareApi.Infrastructure.Persistence;

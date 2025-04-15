@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WoundCareApi.Core.Domain.Entities;
 
-public partial class CRS_CfgBodyLocation
+
+public partial class CfgBodyLocation
 {
     public Guid Puid { get; set; }
 

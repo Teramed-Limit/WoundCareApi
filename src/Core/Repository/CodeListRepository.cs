@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Infrastructure.Persistence;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 

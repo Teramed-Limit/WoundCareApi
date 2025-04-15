@@ -37,9 +37,9 @@ public class GetCaseImageQueryHandler
             var imagePath = _configuration.GetSection("ImageVirtualPath").Value;
             var query =
                 from image in _context.DicomImages
-                join caseSeriesMap in _context.CRS_CareSeriesMaps
+                join caseSeriesMap in _context.DicomSeriesMaps
                     on image.SeriesInstanceUID equals caseSeriesMap.DicomSeriesUid
-                join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+                join clinicalUnitShift in _context.SysClinicalUnitShifts
                     on caseSeriesMap.DicomSeriesClinicalUnitShiftPuid equals clinicalUnitShift.Puid
                     into clinicalShiftGroup
                 from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()

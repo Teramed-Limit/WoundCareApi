@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using WoundCareApi.Application.Services.Interfaces;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;

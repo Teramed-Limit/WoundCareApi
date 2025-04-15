@@ -30,10 +30,10 @@ public class GetCasesByPatientQueryHandler
         try
         {
             var query =
-                from caseItem in _context.CRS_Cases
-                join caseType in _context.CRS_CfgCaseTypes
+                from caseItem in _context.PtCases
+                join caseType in _context.CfgCaseTypes
                     on caseItem.CaseTypePuid equals caseType.Puid
-                join bodyLocation in _context.CRS_CfgBodyLocations
+                join bodyLocation in _context.CfgBodyLocations
                     on caseItem.CaseLocation equals bodyLocation.NISLocationLabel
                 where
                     caseItem.LIfeTimeNumber == request.PatientId

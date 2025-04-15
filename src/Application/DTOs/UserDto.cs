@@ -1,4 +1,4 @@
-﻿using WoundCareApi.Core.Domain.Entities;
+﻿
 
 namespace WoundCareApi.Application.DTOs;
 

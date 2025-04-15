@@ -53,11 +53,11 @@ public class MoveRecordCaseCommandHandler : IRequestHandler<MoveRecordCaseComman
             );
             try
             {
-                var record = await _context.CRS_CaseRecords.FindAsync(
+                var record = await _context.PtCaseRecords.FindAsync(
                     new object[] { recordGuid },
                     cancellationToken
                 );
-                var toCase = await _context.CRS_Cases.FindAsync(
+                var toCase = await _context.PtCases.FindAsync(
                     new object[] { toCaseGuid },
                     cancellationToken
                 );

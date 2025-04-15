@@ -2,7 +2,7 @@ using System.Text.Json;
 using MediatR;
 using WoundCareApi.Application.Common.Results;
 using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
+
 using WoundCareApi.Core.Domain.Interfaces;
 using WoundCareApi.Infrastructure.Persistence;
 using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
@@ -14,11 +14,11 @@ public record UpdateCaseRecordCommand(Guid ReportId, CaseFormDataDto FormData, s
 
 public class UpdateCaseRecordCommandHandler : IRequestHandler<UpdateCaseRecordCommand, Result<Unit>>
 {
-    private readonly IRepository<CRS_CaseRecord, CRSDbContext> _repository;
+    private readonly IRepository<PtCaseRecord, CRSDbContext> _repository;
     private readonly IUnitOfWork _unitOfWork;
 
     public UpdateCaseRecordCommandHandler(
-        IRepository<CRS_CaseRecord, CRSDbContext> repository,
+        IRepository<PtCaseRecord, CRSDbContext> repository,
         IUnitOfWork unitOfWork
     )
     {
@@ -33,7 +33,7 @@ public class UpdateCaseRecordCommandHandler : IRequestHandler<UpdateCaseRecordCo
     {
         try
         {
-            var updateReport = new CRS_CaseRecord
+            var updateReport = new PtCaseRecord
             {
                 Puid = request.ReportId,
                 FormData = JsonSerializer.Serialize(request.FormData.FormData),

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
-namespace WoundCareApi.Core.Domain.Entities;
+
 
 public partial class LoginUserDatum
 {
@@ -42,9 +41,7 @@ public partial class LoginUserDatum
 
     public string? UserGroupList { get; set; }
 
-    [JsonIgnore]
     public string? RefreshToken { get; set; }
 
-    [JsonIgnore]
     public DateTime? RefreshTokenExpiryTime { get; set; }
 }
