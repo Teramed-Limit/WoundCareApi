@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+﻿namespace TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {

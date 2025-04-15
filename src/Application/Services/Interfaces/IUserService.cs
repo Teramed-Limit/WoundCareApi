@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using WoundCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Entities;
 
-namespace WoundCareApi.Application.Services.Interfaces
+namespace TeraLinkaCareApi.Application.Services.Interfaces
 {
     public interface IUserService
     {

@@ -1,30 +1,28 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Application.Services;
-using WoundCareApi.Common.Types;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.API.Controllers.Base;
+using TeraLinkaCareApi.Application.Services;
+using TeraLinkaCareApi.Common.Types;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnitShift, CRSDbContext>
+public class ClinicalUnitShiftController : BaseApiController<SysClinicalUnitShift, CRSDbContext>
 {
     private readonly ILogger<ClinicalUnitShiftController> _logger;
-    private readonly IRepository<CRS_SysClinicalUnit, CRSDbContext> _clinicalUnitRepository;
+    private readonly IRepository<SysClinicalUnit, CRSDbContext> _clinicalUnitRepository;
     private readonly ShiftTimeService _shiftTimeService;
 
     public ClinicalUnitShiftController(
         ILogger<ClinicalUnitShiftController> logger,
-        IRepository<CRS_SysClinicalUnitShift, CRSDbContext> repository,
-        IRepository<CRS_SysClinicalUnit, CRSDbContext> clinicalUnitRepository,
+        IRepository<SysClinicalUnitShift, CRSDbContext> repository,
+        IRepository<SysClinicalUnit, CRSDbContext> clinicalUnitRepository,
         IUnitOfWork unitOfWork,
         ShiftTimeService shiftTimeService
     )
@@ -37,7 +35,7 @@ public class ClinicalUnitShiftController : BaseApiController<CRS_SysClinicalUnit
 
     // 獲取特定輪班對應的臨床單位資訊
     [HttpGet("{id}/clinicalunit")]
-    public async Task<ActionResult<CRS_SysClinicalUnit>> GetClinicalUnitByShiftId(Guid id)
+    public async Task<ActionResult<SysClinicalUnit>> GetClinicalUnitByShiftId(Guid id)
     {
         var shift = await Repository.GetByIdAsync(id);
         if (shift == null)

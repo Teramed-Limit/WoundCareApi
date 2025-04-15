@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace WoundCareApi.Infrastructure.Authentication;
+namespace TeraLinkaCareApi.Infrastructure.Authentication;
 
 public class ApiKeyAuthOptions : AuthenticationSchemeOptions { }

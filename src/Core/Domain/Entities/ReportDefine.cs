@@ -1,6 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
 
-namespace WoundCareApi.Core.Domain.Entities;
+namespace TeraLinkaCareApi.Core.Domain.Entities;
 
 public partial class ReportDefine
 {
@@ -15,4 +16,8 @@ public partial class ReportDefine
     public string? FormDefineFile { get; set; }
 
     public string ReportName { get; set; } = null!;
+
+    public string? HeaderDefine { get; set; }
+
+    public string? FooterDefine { get; set; }
 }

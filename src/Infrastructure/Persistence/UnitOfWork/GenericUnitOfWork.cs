@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.Infrastructure.Persistence.UnitOfWork;
+namespace TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork;
 
 public class GenericUnitOfWork<TContext> : IUnitOfWork
     where TContext : DbContext

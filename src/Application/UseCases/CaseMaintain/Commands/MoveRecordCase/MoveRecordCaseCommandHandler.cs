@@ -1,8 +1,8 @@
 using MediatR;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveRecordCase;
+namespace TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveRecordCase;
 
 public record MoveRecordCaseCommand : IRequest<Result>
 {
@@ -53,11 +53,11 @@ public class MoveRecordCaseCommandHandler : IRequestHandler<MoveRecordCaseComman
             );
             try
             {
-                var record = await _context.CRS_CaseRecords.FindAsync(
+                var record = await _context.PtCaseRecords.FindAsync(
                     new object[] { recordGuid },
                     cancellationToken
                 );
-                var toCase = await _context.CRS_Cases.FindAsync(
+                var toCase = await _context.PtCases.FindAsync(
                     new object[] { toCaseGuid },
                     cancellationToken
                 );

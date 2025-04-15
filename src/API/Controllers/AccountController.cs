@@ -1,13 +1,13 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
-using AutoMapper;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 [ApiController]
 [Authorize]

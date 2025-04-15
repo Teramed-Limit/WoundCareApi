@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WoundCareApi.Core.Domain.Entities;
+namespace TeraLinkaCareApi.Core.Domain.Entities;
 
 public partial class DicomTag
 {

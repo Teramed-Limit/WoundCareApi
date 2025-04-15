@@ -1,11 +1,11 @@
 using System.Globalization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.Cases.Queries.GetCaseRecord;
+namespace TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseRecordDate;
 
 public record GetCaseRecordDateQuery(string CaseId, string Date, bool IsUsingShiftDate)
     : IRequest<Result<IEnumerable<CaseRecordDateDto>>>;
@@ -48,8 +48,8 @@ public class GetCaseRecordQueryHandler
             var nextDate = date.AddDays(1);
 
             var query =
-                from caseRecord in _context.CRS_CaseRecords
-                join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+                from caseRecord in _context.PtCaseRecords
+                join clinicalUnitShift in _context.SysClinicalUnitShifts
                     on caseRecord.ClinicalUnitShiftPuid equals clinicalUnitShift.Puid
                     into clinicalShiftGroup
                 from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()

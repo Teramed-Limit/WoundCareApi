@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Common.Extensions;
+﻿namespace TeraLinkaCareApi.Common.Extensions;
 
 public static class LoggerExtensions
 {

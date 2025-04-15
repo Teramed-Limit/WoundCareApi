@@ -3,13 +3,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
-using WoundCareApi.Application.Services.Interfaces;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Application.Services.Interfaces;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.Application.Services
+namespace TeraLinkaCareApi.Application.Services
 {
     public class UserService : IUserService
     {

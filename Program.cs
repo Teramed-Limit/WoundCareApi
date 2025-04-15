@@ -5,16 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using WoundCareApi.Application.Extensions;
-using WoundCareApi.Application.Services;
-using WoundCareApi.Application.Services.Interfaces;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Authentication;
-using WoundCareApi.Infrastructure.Mappings;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Application.Extensions;
+using TeraLinkaCareApi.Application.Services;
+using TeraLinkaCareApi.Application.Services.Interfaces;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Core.Repository;
+using TeraLinkaCareApi.Infrastructure.Authentication;
+using TeraLinkaCareApi.Infrastructure.Mappings;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using FellowOakDicom;
+using FellowOakDicom.Network;
+using FellowOakDicom.Network.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,11 @@ Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configurat
 
 // 使用 Serilog 作為日誌處理器
 builder.Host.UseSerilog();
+
+// 配置 fo-dicom
+new DicomSetupBuilder()
+    .RegisterServices(s => s.AddFellowOakDicom())
+    .Build();
 
 // 獲取應用配置
 var configuration = builder.Configuration;
@@ -148,6 +156,7 @@ builder.Services.AddScoped<CodeListRepository>();
 // 註冊 Services
 builder.Services.AddScoped<ShiftTimeService>();
 builder.Services.AddScoped<UnitShiftService>();
+builder.Services.AddScoped<PatientEncounterService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddMediatR();

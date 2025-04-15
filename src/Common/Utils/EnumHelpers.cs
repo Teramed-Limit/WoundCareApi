@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace WoundCareApi.Utils;
+namespace TeraLinkaCareApi.Common.Utils;
 
 // Class to get the Display Name attribute of an enum value
 public static class EnumHelper

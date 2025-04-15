@@ -1,11 +1,11 @@
 using System.Globalization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.Cases.Queries.GetCaseImage;
+namespace TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseImage;
 
 public record GetCaseImageQuery(string CaseId, string Date, bool IsUsingShiftDate)
     : IRequest<Result<IEnumerable<CaseImageDto>>>;
@@ -37,9 +37,9 @@ public class GetCaseImageQueryHandler
             var imagePath = _configuration.GetSection("ImageVirtualPath").Value;
             var query =
                 from image in _context.DicomImages
-                join caseSeriesMap in _context.CRS_CareSeriesMaps
+                join caseSeriesMap in _context.DicomSeriesMaps
                     on image.SeriesInstanceUID equals caseSeriesMap.DicomSeriesUid
-                join clinicalUnitShift in _context.CRS_SysClinicalUnitShifts
+                join clinicalUnitShift in _context.SysClinicalUnitShifts
                     on caseSeriesMap.DicomSeriesClinicalUnitShiftPuid equals clinicalUnitShift.Puid
                     into clinicalShiftGroup
                 from clinicalUnitShift in clinicalShiftGroup.DefaultIfEmpty()
@@ -66,6 +66,7 @@ public class GetCaseImageQueryHandler
                     FilePath = imagePath + Path.ChangeExtension(image.FilePath.Trim(), ".jpg"),
                     SeriesInstanceUID = image.SeriesInstanceUID.Trim(),
                     ImageMarker = image.ImageMarker ?? "",
+                    ImageComment = image.ImageComment ?? "",
                     ShiftDate = caseSeriesMap.DicomSeriesShiftDate,
                     ShiftLongLabel = clinicalUnitShift.ShiftLongLabel,
                     ShiftShortLabel = clinicalUnitShift.ShiftShortLabel,

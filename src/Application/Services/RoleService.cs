@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.Services;
+namespace TeraLinkaCareApi.Application.Services;
 
 public class RoleService
 {

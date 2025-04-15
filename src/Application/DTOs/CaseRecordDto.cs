@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WoundCareApi.Application.DTOs;
+namespace TeraLinkaCareApi.Application.DTOs;
 
 public class CaseRecordDto
 {
@@ -12,6 +12,8 @@ public class CaseRecordDto
     public Dictionary<string, object>? FormData { get; set; }
     public DateTime? ObservationDateTime { get; set; }
     public DateTime? ObservationShiftDate { get; set; }
+    public string? ObservationDateTimeString { get; set; }
+    public string? ObservationShiftDateString { get; set; }
 
     [JsonIgnore]
     public string? RawFormDefine { get; set; }

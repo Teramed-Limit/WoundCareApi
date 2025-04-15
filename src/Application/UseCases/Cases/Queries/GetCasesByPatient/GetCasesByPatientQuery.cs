@@ -1,11 +1,11 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.Cases.Queries.GetCasesByPatient;
+namespace TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCasesByPatient;
 
 public record GetCasesByPatientQuery(string PatientId, string EncounterId)
     : IRequest<Result<Dictionary<string, List<CaseDto>>>>;
@@ -30,11 +30,13 @@ public class GetCasesByPatientQueryHandler
         try
         {
             var query =
-                from caseItem in _context.CRS_Cases
-                join caseType in _context.CRS_CfgCaseTypes
-                    on caseItem.CaseTypePuid equals caseType.Puid
-                join bodyLocation in _context.CRS_CfgBodyLocations
+                from caseItem in _context.PtCases
+                join caseType in _context.CfgCaseTypes on caseItem.CaseTypePuid equals caseType.Puid
+                join bodyLocation in _context.CfgBodyLocations
                     on caseItem.CaseLocation equals bodyLocation.NISLocationLabel
+                // join caseMap in _context.DicomSeriesMaps on caseItem.Puid equals caseMap.PtCasePuid
+                // join dcmSeries in _context.DicomSeries
+                //     on caseMap.DicomSeriesUid equals dcmSeries.SeriesInstanceUID
                 where
                     caseItem.LIfeTimeNumber == request.PatientId
                     && caseItem.EncounterNumber == request.EncounterId
@@ -43,7 +45,9 @@ public class GetCasesByPatientQueryHandler
                     Case = caseItem,
                     LocationLabel = bodyLocation.NISLocationLabel,
                     LocationSVGId = bodyLocation.SVGGraphicId,
-                    CasetypeShortLabel = caseType.CaseTypeShortLabel
+                    CasetypeShortLabel = caseType.CaseTypeShortLabel,
+                    // SeriesInsUid = caseMap.DicomSeriesUid,
+                    // StudyInsUid = dcmSeries.StudyInstanceUID
                 };
 
             var results = await query.ToListAsync();

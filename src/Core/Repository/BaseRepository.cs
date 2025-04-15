@@ -1,10 +1,10 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Common.Extensions;
-using WoundCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Common.Extensions;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
 
-namespace WoundCareApi.Core.Repository;
+namespace TeraLinkaCareApi.Core.Repository;
 
 // 存儲庫的泛型實現
 public class GenericRepository<T, C> : IRepository<T, C>
@@ -19,6 +19,11 @@ public class GenericRepository<T, C> : IRepository<T, C>
     {
         _context = context;
         _dbSet = context.Set<T>();
+    }
+
+    public DbSet<T> GetDBSet()
+    {
+        return _dbSet;
     }
 
     // 添加實體到DbContext
@@ -120,11 +125,44 @@ public class GenericRepository<T, C> : IRepository<T, C>
     )
     {
         if (orderBy != null)
-            return await _dbSet.Where(expression).OrderBy(orderBy).ToListAsync();
+            return await _dbSet.Where(expression).AsNoTracking().OrderBy(orderBy).ToListAsync();
 
         return await _dbSet.Where(expression).ToListAsync();
     }
 
+    // 更彈性的查詢方法，允許外部指定查詢條件
+    public async Task<T> GetOneByConditionAsync(
+        Expression<Func<T, bool>> expression,
+        Expression<Func<T, object>>? orderBy = null,
+        bool isDesc = false
+    )
+    {
+        var query = _dbSet.Where(expression).AsNoTracking();
+
+        if (orderBy != null)
+        {
+            query = isDesc ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+        }
+
+        return await query.Take(1).FirstAsync();
+    }
+    
+    public IQueryable GetQueryAsync(
+        Expression<Func<T, bool>> expression,
+        Expression<Func<T, object>>? orderBy = null,
+        bool isDesc = false
+    )
+    {
+        var query = _dbSet.Where(expression).AsNoTracking();
+
+        if (orderBy != null)
+        {
+            query = isDesc ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+        }
+
+        return query;
+    }
+    
     // Upsert
     public async Task UpsertAsync(T entity, object id)
     {

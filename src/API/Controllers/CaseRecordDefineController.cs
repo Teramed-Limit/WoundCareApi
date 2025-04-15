@@ -1,13 +1,14 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 [ApiController]
 [Authorize]
@@ -38,8 +39,13 @@ public class CaseRecordDefineController : ControllerBase
     {
         try
         {
-            var report = await _repository.GetByConditionAsync(x => x.Puid == Guid.Parse(reportId));
-            var reportDto = report.Select(ToReportDefineDto).FirstOrDefault();
+            var report = await _repository.GetByIdAsync(Guid.Parse(reportId));
+            if (report == null)
+            {
+                return BadRequest("找不到最新的報告定義");
+            }
+
+            var reportDto = ToReportDefineDto(report);
 
             if (reportDto == null)
             {
@@ -74,11 +80,12 @@ public class CaseRecordDefineController : ControllerBase
     {
         try
         {
-            var reportDefine = await _repository.GetByConditionAsync(x => x.ReportName == report);
-            var reportDto = reportDefine
-                .OrderByDescending(x => x.CreateDateTime)
-                .Select(ToReportDefineDto)
-                .FirstOrDefault();
+            var reportDefine = await _repository.GetOneByConditionAsync(
+                x => x.ReportName == report,
+                r => r.CreateDateTime,
+                true
+            );
+            var reportDto = ToReportDefineDto(reportDefine);
 
             if (reportDto == null)
             {
@@ -104,14 +111,15 @@ public class CaseRecordDefineController : ControllerBase
     {
         try
         {
-            var reportDefineList = await _repository.GetAllAsync();
-            var reportListDto = reportDefineList
+            var reportLatestListDto = _repository
+                .GetDBSet()
+                .AsNoTracking()
                 .OrderByDescending(x => x.CreateDateTime)
                 .Select(ToReportDefineDto)
                 .GroupBy(x => x.ReportName)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            return Ok(reportListDto);
+            return Ok(reportLatestListDto);
         }
         catch (Exception ex)
         {

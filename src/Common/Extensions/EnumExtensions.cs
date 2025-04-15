@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace WoundCareApi.Common.Extensions;
+namespace TeraLinkaCareApi.Common.Extensions;
 
 public static class EnumExtensions
 {

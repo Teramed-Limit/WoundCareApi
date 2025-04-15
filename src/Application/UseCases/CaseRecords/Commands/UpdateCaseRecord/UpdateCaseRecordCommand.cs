@@ -1,24 +1,24 @@
 using System.Text.Json;
 using MediatR;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
+namespace TeraLinkaCareApi.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
 
 public record UpdateCaseRecordCommand(Guid ReportId, CaseFormDataDto FormData, string UserId)
     : IRequest<Result<Unit>>;
 
 public class UpdateCaseRecordCommandHandler : IRequestHandler<UpdateCaseRecordCommand, Result<Unit>>
 {
-    private readonly IRepository<CRS_CaseRecord, CRSDbContext> _repository;
+    private readonly IRepository<PtCaseRecord, CRSDbContext> _repository;
     private readonly IUnitOfWork _unitOfWork;
 
     public UpdateCaseRecordCommandHandler(
-        IRepository<CRS_CaseRecord, CRSDbContext> repository,
+        IRepository<PtCaseRecord, CRSDbContext> repository,
         IUnitOfWork unitOfWork
     )
     {
@@ -33,7 +33,7 @@ public class UpdateCaseRecordCommandHandler : IRequestHandler<UpdateCaseRecordCo
     {
         try
         {
-            var updateReport = new CRS_CaseRecord
+            var updateReport = new PtCaseRecord
             {
                 Puid = request.ReportId,
                 FormData = JsonSerializer.Serialize(request.FormData.FormData),

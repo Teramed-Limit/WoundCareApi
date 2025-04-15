@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveSeriesToCase;
+namespace TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveSeriesToCase;
 
 public record MoveSeriesToCaseCommand : IRequest<Result>
 {
@@ -49,11 +49,11 @@ public class MoveSeriesToCaseCommandHandler : IRequestHandler<MoveSeriesToCaseCo
             );
             try
             {
-                var series = await _context.CRS_CareSeriesMaps.FirstOrDefaultAsync(
+                var series = await _context.DicomSeriesMaps.FirstOrDefaultAsync(
                     x => x.DicomSeriesUid == request.SeriesInstanceUid,
                     cancellationToken
                 );
-                var toCase = await _context.CRS_Cases.FindAsync(
+                var toCase = await _context.PtCases.FindAsync(
                     new object[] { toCaseGuid },
                     cancellationToken
                 );

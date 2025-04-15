@@ -1,15 +1,13 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
-using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.API.Controllers.Base;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 /// <summary>
 /// 臨床單位管理控制器
@@ -17,16 +15,16 @@ namespace WoundCareApi.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class ClinicalUnitController : BaseApiController<CRS_SysClinicalUnit, CRSDbContext>
+public class ClinicalUnitController : BaseApiController<SysClinicalUnit, CRSDbContext>
 {
     private readonly ILogger<ClinicalUnitController> _logger;
-    private readonly IRepository<CRS_SysClinicalUnitShift, CRSDbContext> _shiftRepository;
-    private readonly IRepository<CRS_SysClinicalUnit, CRSDbContext> _clinicalUnitRepository;
+    private readonly IRepository<SysClinicalUnitShift, CRSDbContext> _shiftRepository;
+    private readonly IRepository<SysClinicalUnit, CRSDbContext> _clinicalUnitRepository;
 
     public ClinicalUnitController(
         ILogger<ClinicalUnitController> logger,
-        IRepository<CRS_SysClinicalUnit, CRSDbContext> repository,
-        IRepository<CRS_SysClinicalUnitShift, CRSDbContext> shiftRepository,
+        IRepository<SysClinicalUnit, CRSDbContext> repository,
+        IRepository<SysClinicalUnitShift, CRSDbContext> shiftRepository,
         IUnitOfWork unitOfWork
     )
         : base(repository, unitOfWork, logger)
@@ -43,7 +41,7 @@ public class ClinicalUnitController : BaseApiController<CRS_SysClinicalUnit, CRS
     /// <returns>輪班資訊列表</returns>
     [HttpGet("{id}/shifts")]
     public async Task<
-        ActionResult<IEnumerable<CRS_SysClinicalUnitShift>>
+        ActionResult<IEnumerable<SysClinicalUnitShift>>
     > GetShiftsByClinicalUnitId(Guid id)
     {
         try
@@ -57,14 +55,14 @@ public class ClinicalUnitController : BaseApiController<CRS_SysClinicalUnit, CRS
             }
 
             // 獲取輪班資訊
-            Expression<Func<CRS_SysClinicalUnitShift, bool>> condition = s =>
+            Expression<Func<SysClinicalUnitShift, bool>> condition = s =>
                 s.ClinicalUnitPuid == id;
             var shifts = await _shiftRepository.GetByConditionAsync(condition);
             var shiftsList = shifts.ToList();
 
             if (!shiftsList.Any())
             {
-                return Ok(Array.Empty<CRS_SysClinicalUnitShift>());
+                return Ok(Array.Empty<SysClinicalUnitShift>());
             }
             
             return Ok(shiftsList);

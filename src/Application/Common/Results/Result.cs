@@ -1,4 +1,4 @@
-namespace WoundCareApi.Application.Common.Results;
+namespace TeraLinkaCareApi.Application.Common.Results;
 
 public class Result
 {

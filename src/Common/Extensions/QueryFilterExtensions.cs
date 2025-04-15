@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace WoundCareApi.Common.Extensions;
+namespace TeraLinkaCareApi.Common.Extensions;
 
 // Define a static class to hold extension methods for IQueryable
 public static class QueryFilterExtensions

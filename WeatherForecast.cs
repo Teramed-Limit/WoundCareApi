@@ -1,4 +1,4 @@
-namespace WoundCareApi;
+namespace TeraLinkaCareApi;
 
 public class WeatherForecast
 {

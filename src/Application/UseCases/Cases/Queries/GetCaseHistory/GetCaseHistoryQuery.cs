@@ -1,10 +1,10 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.Cases.Queries.GetCaseHistory;
+namespace TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseHistory;
 
 public record GetCaseHistoryQuery(string CaseId) : IRequest<Result<CaseHistoryDto>>;
 
@@ -31,7 +31,7 @@ public class GetCaseHistoryQueryHandler
         var parsedCaseId = Guid.Parse(request.CaseId);
 
         // 分別查詢記錄日期和系列日期
-        var recordDates = await _context.CRS_CaseRecords
+        var recordDates = await _context.PtCaseRecords
             .Where(r => r.PtCasePuid == parsedCaseId)
             .Select(
                 r =>
@@ -47,12 +47,13 @@ public class GetCaseHistoryQueryHandler
             )
             .ToListAsync();
 
-        var seriesDates = await _context.CRS_CareSeriesMaps
+        var seriesDates = await _context.DicomSeriesMaps
             .Where(s => s.PtCasePuid == parsedCaseId)
             .Select(
                 s =>
                     new
                     {
+                        SeriesUid = s.DicomSeriesUid,
                         SeriesDate = !string.IsNullOrEmpty(s.DicomSeriesDate)
                             ? s.DicomSeriesDate.Trim()
                             : null,

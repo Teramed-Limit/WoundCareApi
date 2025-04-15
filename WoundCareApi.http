@@ -1,6 +1,0 @@
-@WoundCareApi_HostAddress = http://localhost:5169
-
-GET {{WoundCareApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,12 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveCase;
-using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveRecordCase;
-using WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveSeriesToCase;
+using TeraLinkaCareApi.API.Controllers.Base;
+using TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveCase;
+using TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveRecordCase;
+using TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveSeriesToCase;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 /// <summary>
 /// 案例維護控制器，用於處理案例相關的維護操作

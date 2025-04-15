@@ -1,3 +1,5 @@
+namespace TeraLinkaCareApi.Application.DTOs;
+
 public class UserAccountDto
 {
     public string UserID { get; set; } = null!;

@@ -1,12 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Application.Services;
-using WoundCareApi.Application.Services.Interfaces;
-using WoundCareApi.Common.Types;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Application.Services.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

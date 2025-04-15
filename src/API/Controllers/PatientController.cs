@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 /// <summary>
 /// 病患資料控制器
@@ -16,11 +15,11 @@ namespace WoundCareApi.API.Controllers;
 public class PatientController : ControllerBase
 {
     private readonly ILogger<PatientController> _logger;
-    private readonly IRepository<CRS_A_PtEncounter, CRSDbContext> _repository;
+    private readonly IRepository<A_PtEncounter, CRSDbContext> _repository;
 
     public PatientController(
         ILogger<PatientController> logger,
-        IRepository<CRS_A_PtEncounter, CRSDbContext> repository
+        IRepository<A_PtEncounter, CRSDbContext> repository
     )
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -34,7 +33,7 @@ public class PatientController : ControllerBase
     /// <returns>病患資料</returns>
     [Authorize(AuthenticationSchemes = "Bearer,ApiKey")]
     [HttpGet("patientId/{patientId}")]
-    public async Task<ActionResult<CRS_PtPatient>> GetByPatientId(string patientId)
+    public async Task<ActionResult<PtPatient>> GetByPatientId(string patientId)
     {
         try
         {
