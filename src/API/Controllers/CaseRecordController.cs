@@ -1,13 +1,13 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Application.DTOs;
-using MediatR;
-using WoundCareApi.Application.UseCases.CaseRecords.Commands.InsertCaseRecord;
-using WoundCareApi.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
-using WoundCareApi.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
+using TeraLinkaCareApi.API.Controllers.Base;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Application.UseCases.CaseRecords.Commands.InsertCaseRecord;
+using TeraLinkaCareApi.Application.UseCases.CaseRecords.Commands.UpdateCaseRecord;
+using TeraLinkaCareApi.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 [ApiController]
 [Authorize]
@@ -32,6 +32,7 @@ public class CaseRecordController : BaseController
         }
 
         var query = new GetCaseRecordByIdQuery(recordGuid);
+
         var result = await _mediator.Send(query);
 
         if (!result.Succeeded)

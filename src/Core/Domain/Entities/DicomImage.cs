@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WoundCareApi.Core.Domain.Entities;
+﻿namespace TeraLinkaCareApi.Core.Domain.Entities;
 
 public partial class DicomImage
 {
@@ -48,4 +45,6 @@ public partial class DicomImage
     public int? NumberOfFrames { get; set; }
 
     public string? ImageMarker { get; set; }
+
+    public string? ImageComment { get; set; }
 }

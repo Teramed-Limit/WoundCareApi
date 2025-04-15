@@ -1,4 +1,4 @@
-namespace WoundCareApi.Core.Domain.Interfaces;
+namespace TeraLinkaCareApi.Core.Domain.Interfaces;
 
 public interface IEntity
 {

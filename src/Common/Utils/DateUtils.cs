@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Common.Utils;
+﻿namespace TeraLinkaCareApi.Common.Utils;
 
 public static class DateUtils
 {

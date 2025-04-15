@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers.Base;
+namespace TeraLinkaCareApi.API.Controllers.Base;
 
 // 基礎API控制器提供CRUD操作
 [Authorize]

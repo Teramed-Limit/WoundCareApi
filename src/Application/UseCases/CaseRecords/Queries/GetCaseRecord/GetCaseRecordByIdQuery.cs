@@ -1,11 +1,11 @@
 using System.Text.Json;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
+namespace TeraLinkaCareApi.Application.UseCases.CaseRecords.Queries.GetCaseRecord;
 
 public record GetCaseRecordByIdQuery(Guid ReportId) : IRequest<Result<CaseRecordDto>>;
 
@@ -27,7 +27,7 @@ public class GetCaseRecordByIdQueryHandler
         try
         {
             var query =
-                from caseRecord in _context.CRS_CaseRecords
+                from caseRecord in _context.PtCaseRecords
                 join caseRecordFormDefine in _context.ReportDefines
                     on caseRecord.FormDefinePuid equals caseRecordFormDefine.Puid
                 where caseRecord.Puid == request.ReportId
@@ -42,6 +42,14 @@ public class GetCaseRecordByIdQueryHandler
                     FormData = null,
                     RawFormDefine = caseRecordFormDefine.FormDefine,
                     RawFormData = caseRecord.FormData,
+                    ObservationDateTimeString =
+                        caseRecord.ObservationDateTime != null
+                            ? caseRecord.ObservationDateTime.Value.ToString("yyyy/MM/dd HH:mm:ss")
+                            : null,
+                    ObservationShiftDateString =
+                        caseRecord.ObservationShiftDate != null
+                            ? caseRecord.ObservationShiftDate.Value.ToString("yyyy/MM/dd")
+                            : null,
                 };
 
             var results = await query

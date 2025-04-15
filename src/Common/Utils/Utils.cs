@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Utils;
+﻿namespace TeraLinkaCareApi.Common.Utils;
 
 public static class Utils
 {

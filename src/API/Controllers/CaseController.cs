@@ -1,15 +1,15 @@
+using System.Globalization;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using WoundCareApi.Application.DTOs;
-using MediatR;
-using WoundCareApi.Application.UseCases.Cases.Commands.SetCaseStatus;
-using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseHistory;
-using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseImage;
-using WoundCareApi.Application.UseCases.Cases.Queries.GetCaseRecord;
-using WoundCareApi.Application.UseCases.Cases.Queries.GetCasesByPatient;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Application.UseCases.Cases.Commands.SetCaseStatus;
+using TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseHistory;
+using TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseImage;
+using TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCaseRecordDate;
+using TeraLinkaCareApi.Application.UseCases.Cases.Queries.GetCasesByPatient;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 /// <summary>
 /// 傷口案例管理控制器
@@ -136,7 +136,9 @@ public class CaseController : ControllerBase
                 return BadRequest("無效的日期格式，請使用yyyyMMdd格式");
             }
 
-            var res = await _mediator.Send(new GetCaseRecordDateQuery(caseId, date, isUsingShiftDate));
+            var res = await _mediator.Send(
+                new GetCaseRecordDateQuery(caseId, date, isUsingShiftDate)
+            );
             return Ok(res.Data);
         }
         catch (Exception ex)

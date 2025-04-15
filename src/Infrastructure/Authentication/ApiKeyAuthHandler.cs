@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 
-namespace WoundCareApi.Infrastructure.Authentication;
+namespace TeraLinkaCareApi.Infrastructure.Authentication;
 
 public class ApiKeyAuthHandler : AuthenticationHandler<ApiKeyAuthOptions>
 {

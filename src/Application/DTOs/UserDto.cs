@@ -1,6 +1,8 @@
-﻿using WoundCareApi.Core.Domain.Entities;
+﻿
 
-namespace WoundCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+
+namespace TeraLinkaCareApi.Application.DTOs;
 
 public class UserDto
 {

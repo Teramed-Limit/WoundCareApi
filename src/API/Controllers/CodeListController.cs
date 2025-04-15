@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WoundCareApi.API.Controllers.Base;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.API.Controllers.Base;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Repository;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers
+namespace TeraLinkaCareApi.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

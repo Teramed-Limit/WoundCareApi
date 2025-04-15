@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.Core.Repository;
+namespace TeraLinkaCareApi.Core.Repository;
 
 // 存儲庫的泛型實現
 public class CodeListRepository : GenericRepository<CodeList, CRSDbContext>

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WoundCareApi.Core.Domain.Entities;
+namespace TeraLinkaCareApi.Core.Domain.Entities;
 
-public partial class CRS_A_PtEncounter
+public partial class A_PtEncounter
 {
     public Guid Puid { get; set; }
 
     public Guid? PatientPuid { get; set; }
 
-    public Guid? PtEncounterPuid { get; set; }
+    public Guid PtEncounterPuid { get; set; }
 
     public Guid? ClinicalUnitPuid { get; set; }
 

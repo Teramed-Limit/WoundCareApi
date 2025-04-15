@@ -1,4 +1,4 @@
-namespace WoundCareApi.Core.Domain.ValueObjects;
+namespace TeraLinkaCareApi.Core.Domain.ValueObjects;
 
 public abstract class ValueObject
 {

@@ -1,4 +1,4 @@
-namespace WoundCareApi.Application.DTOs;
+namespace TeraLinkaCareApi.Application.DTOs;
 
 public class CaseFormDataDto
 {

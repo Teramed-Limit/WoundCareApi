@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.CaseMaintain.Commands.MoveCase;
+namespace TeraLinkaCareApi.Application.UseCases.CaseMaintain.Commands.MoveCase;
 
 public record MoveCaseCommand : IRequest<Result>
 {
@@ -43,11 +43,11 @@ public class MoveCaseCommandHandler : IRequestHandler<MoveCaseCommand, Result>
                 return Result.Failure("無效的目標案例ID格式");
             }
 
-            var fromCase = await _context.CRS_Cases.FindAsync(
+            var fromCase = await _context.PtCases.FindAsync(
                 new object[] { fromCaseGuid },
                 cancellationToken
             );
-            var toCase = await _context.CRS_Cases.FindAsync(
+            var toCase = await _context.PtCases.FindAsync(
                 new object[] { toCaseGuid },
                 cancellationToken
             );
@@ -82,14 +82,14 @@ public class MoveCaseCommandHandler : IRequestHandler<MoveCaseCommand, Result>
             );
             try
             {
-                await _context.CRS_CaseRecords
+                await _context.PtCaseRecords
                     .Where(x => x.PtCasePuid == fromCaseGuid)
                     .ExecuteUpdateAsync(
                         s => s.SetProperty(b => b.PtCasePuid, toCaseGuid),
                         cancellationToken
                     );
 
-                await _context.CRS_CareSeriesMaps
+                await _context.DicomSeriesMaps
                     .Where(x => x.PtCasePuid == fromCaseGuid)
                     .ExecuteUpdateAsync(
                         s => s.SetProperty(b => b.PtCasePuid, toCaseGuid),

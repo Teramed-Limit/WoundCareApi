@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Common.Types;
+﻿namespace TeraLinkaCareApi.Common.Types;
 
 /// <summary>
 /// 班別時間結果

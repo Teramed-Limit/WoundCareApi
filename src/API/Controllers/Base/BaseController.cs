@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WoundCareApi.API.Controllers.Base;
+namespace TeraLinkaCareApi.API.Controllers.Base;
 
 /// <summary>
 /// 基礎控制器，提供通用的控制器功能

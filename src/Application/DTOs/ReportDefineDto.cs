@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace WoundCareApi.Application.DTOs;
+namespace TeraLinkaCareApi.Application.DTOs;
 
 public class ReportDefineDto
 {

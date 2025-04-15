@@ -1,4 +1,4 @@
-namespace WoundCareApi.Application.Extensions
+namespace TeraLinkaCareApi.Application.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace WoundCareApi.Application.Enums;
+namespace TeraLinkaCareApi.Application.Enums;
 
 public enum CaseStatus
 {

@@ -1,15 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using WoundCareApi.Application.DTOs;
-using WoundCareApi.Core.Domain.Entities;
-using WoundCareApi.Core.Domain.Interfaces;
-using WoundCareApi.Core.Repository;
-using WoundCareApi.Infrastructure.Persistence;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork;
-using WoundCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
+using TeraLinkaCareApi.Application.DTOs;
+using TeraLinkaCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Core.Domain.Interfaces;
+using TeraLinkaCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Infrastructure.Persistence.UnitOfWork.Interfaces;
 
-namespace WoundCareApi.API.Controllers;
+namespace TeraLinkaCareApi.API.Controllers;
 
 /// <summary>
 /// DICOM 影像控制器，處理與 DICOM 影像相關的操作
@@ -74,6 +72,38 @@ public class DicomImageController : ControllerBase
                 sopInstanceUid
             );
             return StatusCode(500, "更新 DICOM 影像標記時發生錯誤");
+        }
+    }
+
+    /// <summary>
+    /// 更新 DICOM 影像的說明
+    /// </summary>
+    /// <param name="sopInstanceUid">DICOM 影像的 SOP Instance UID</param>
+    /// <param name="imageComment">影像標記資訊</param>
+    /// <returns>更新後的 DICOM 影像資訊</returns>
+    [HttpPost("sopInstanceUid/{sopInstanceUid}/imageComment")]
+    public async Task<ActionResult<string>> PostImageComment(
+        [Required(ErrorMessage = "SOP Instance UID 為必填項")] string sopInstanceUid,
+        [FromBody] ImageCommentDto imageComment
+    )
+    {
+        try
+        {
+            var dicomImage = new DicomImage
+            {
+                SOPInstanceUID = sopInstanceUid,
+                ImageComment = imageComment.ImageComment
+            };
+
+            await _repository.UpdatePartialAsync(dicomImage, "SOPInstanceUID", "ImageComment");
+            await _unitOfWork.SaveAsync();
+
+            return Ok("更新成功");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "更新影像說明時發生錯誤，SOP Instance UID: {SopInstanceUid}", sopInstanceUid);
+            return StatusCode(500, "更新影像說明時發生錯誤");
         }
     }
 }

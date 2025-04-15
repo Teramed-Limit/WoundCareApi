@@ -1,8 +1,8 @@
-using WoundCareApi.Common.Types;
-using WoundCareApi.Common.Utils;
-using WoundCareApi.Core.Domain.Entities;
+using TeraLinkaCareApi.Common.Types;
+using TeraLinkaCareApi.Common.Utils;
+using TeraLinkaCareApi.Core.Domain.Entities;
 
-namespace WoundCareApi.Application.Services
+namespace TeraLinkaCareApi.Application.Services
 {
     /// <summary>
     /// 班別時間服務，用於計算與臨床班別相關的時間資訊
@@ -19,8 +19,8 @@ namespace WoundCareApi.Application.Services
         /// <returns>返回班別和時間資訊或null</returns>
         public ShiftTimeResult? DetermineShiftAndTime(
             DateTime dateTime,
-            List<CRS_SysClinicalUnit> clinicalUnits,
-            List<CRS_SysClinicalUnitShift> shifts,
+            List<SysClinicalUnit> clinicalUnits,
+            List<SysClinicalUnitShift> shifts,
             Guid? clinicalUnitPuid = null
         )
         {
@@ -36,7 +36,7 @@ namespace WoundCareApi.Application.Services
 
             // 臨床日期計算（考慮到臨床日可能與自然日不同）
             // 如果提供了特定的臨床單位PUID，則使用該臨床單位，否則使用第一個
-            CRS_SysClinicalUnit clinicalUnit;
+            SysClinicalUnit clinicalUnit;
             if (clinicalUnitPuid.HasValue)
             {
                 clinicalUnit = clinicalUnits.FirstOrDefault(u => u.Puid == clinicalUnitPuid.Value);

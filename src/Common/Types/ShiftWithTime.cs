@@ -1,4 +1,4 @@
-﻿namespace WoundCareApi.Common.Types;
+﻿namespace TeraLinkaCareApi.Common.Types;
 
 /// <summary>
 /// 包含時間的班別資訊

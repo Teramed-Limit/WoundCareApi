@@ -1,10 +1,10 @@
 using MediatR;
-using WoundCareApi.Application.Common.Results;
-using WoundCareApi.Application.Enums;
-using WoundCareApi.Common.Extensions;
-using WoundCareApi.Infrastructure.Persistence;
+using TeraLinkaCareApi.Application.Common.Results;
+using TeraLinkaCareApi.Application.Enums;
+using TeraLinkaCareApi.Common.Extensions;
+using TeraLinkaCareApi.Infrastructure.Persistence;
 
-namespace WoundCareApi.Application.UseCases.Cases.Commands.SetCaseStatus;
+namespace TeraLinkaCareApi.Application.UseCases.Cases.Commands.SetCaseStatus;
 
 public record SetCaseStatusCommand(Guid CaseId, bool IsClosed, string UserId) : IRequest<Result<bool>>;
 
@@ -22,7 +22,7 @@ public class SetCaseStatusCommandHandler : IRequestHandler<SetCaseStatusCommand,
         CancellationToken cancellationToken
     )
     {
-        var case_ = await _context.CRS_Cases.FindAsync(request.CaseId);
+        var case_ = await _context.PtCases.FindAsync(request.CaseId);
 
         if (case_ == null)
         {
