@@ -35,6 +35,7 @@ public class GetCaseImageQueryHandler
             var nextDateString = nextDate.ToString("yyyyMMdd");
 
             var imagePath = _configuration.GetSection("ImageVirtualPath").Value;
+            var imageMarkerPath = _configuration.GetSection("ImageMarkerVirtualPath").Value;
             var query =
                 from image in _context.DicomImages
                 join caseSeriesMap in _context.DicomSeriesMaps
@@ -64,6 +65,8 @@ public class GetCaseImageQueryHandler
                     ImageDate = image.ImageDate.Trim(),
                     ImageTime = image.ImageTime.Trim(),
                     FilePath = imagePath + Path.ChangeExtension(image.FilePath.Trim(), ".jpg"),
+                    ImageUrl = imagePath + Path.ChangeExtension(image.FilePath.Trim(), ".jpg"),
+                    imageMarkerUrl = Path.Combine(imageMarkerPath , Path.GetFileName(image.ImageMarkerUrl)),
                     SeriesInstanceUID = image.SeriesInstanceUID.Trim(),
                     ImageMarker = image.ImageMarker ?? "",
                     ImageComment = image.ImageComment ?? "",

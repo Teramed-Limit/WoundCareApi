@@ -535,6 +535,7 @@ public partial class CRSDbContext : DbContext
                 .HasMaxLength(24)
                 .IsFixedLength();
             entity.Property(e => e.UnmappedDcmTags).HasMaxLength(1024);
+            entity.Property(e => e.ImageMarkerUrl).HasMaxLength(256);
         });
 
         modelBuilder.Entity<DicomNode>(entity =>
@@ -1239,6 +1240,7 @@ public partial class CRSDbContext : DbContext
             entity.Property(e => e.Comment).HasMaxLength(2000);
             entity.Property(e => e.CreateDateTime).HasMaxLength(16);
             entity.Property(e => e.CreateUser).HasMaxLength(32);
+            entity.Property(e => e.FormData).HasMaxLength(4000);
             entity.Property(e => e.LoadTime).HasColumnType("datetime");
             entity.Property(e => e.ModifiedDateTime).HasMaxLength(16);
             entity.Property(e => e.ModifiedUser).HasMaxLength(32);
